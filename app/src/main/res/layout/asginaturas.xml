@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="8dp"
-        android:text="Button"
+        android:text="Guardar"
         app:layout_constraintLeft_toLeftOf="@+id/editText"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
 </android.support.constraint.ConstraintLayout>
