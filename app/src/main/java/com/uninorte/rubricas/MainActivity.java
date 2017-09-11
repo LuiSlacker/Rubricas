@@ -3,6 +3,7 @@ package com.uninorte.rubricas;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.logging.Logger;
+
+import static com.uninorte.rubricas.R.id.fab;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,14 +34,33 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        final LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_layout);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                counter++;
+                View campo = getLayoutInflater().inflate(R.layout.asginaturas, null);
+                TextView campoLabel = (TextView) campo.findViewById(R.id.campo_label);
+                Button btn = (Button) campo.findViewById(R.id.button);
+
+                campoLabel.setText("Asignatura " + counter);
+                btn.setTag(counter + "");
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("tag", "Asignatura " + view.getTag() + " clicked");
+                        Toast.makeText(MainActivity.this, "Asignatura" + view.getTag() +" clicked",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                mainLayout.addView(campo);
             }
         });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -79,15 +109,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Log.d("tag", id+"");
+        Log.d("tag", R.id.nav_estudiantes+"");
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_estudiantes) {
+            Log.d("tag", "clicked");
+            setContentView(R.layout.estudiantes);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

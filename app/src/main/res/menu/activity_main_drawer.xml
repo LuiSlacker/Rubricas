@@ -6,11 +6,11 @@
     <item android:title="Crear / Cambiar">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_asignatura"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Asginaturas" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_estudiantes"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Estudiantes" />
         </menu>
