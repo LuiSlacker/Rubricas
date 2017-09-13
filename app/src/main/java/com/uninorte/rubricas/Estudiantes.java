@@ -26,6 +26,15 @@ public class Estudiantes extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String[] estudiantes = new String[] {
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf",
+            "sadfsdfsd sdfsdf"
+    };
 
     private OnFragmentInteractionListener mListener;
 

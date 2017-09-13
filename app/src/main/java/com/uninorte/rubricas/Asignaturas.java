@@ -1,20 +1,31 @@
 package com.uninorte.rubricas;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +46,8 @@ public class Asignaturas extends Fragment {
     private String mParam2;
 
     private int counter = 0;
+    private List<String> asignaturas;
+    private ArrayAdapter<String> asignaturasAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,7 +80,6 @@ public class Asignaturas extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -79,27 +91,44 @@ public class Asignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        asignaturas = new ArrayList<String>();
+        asignaturasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, asignaturas);
+        ListView listview = (ListView) getActivity().findViewById(R.id.asignaturasListView);
+        listview.setAdapter(asignaturasAdapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("tag", asignaturas.get(i)+"");
+            }
+        });
+
+
         final LinearLayout mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
         FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                counter++;
-                View campo = getActivity().getLayoutInflater().inflate(R.layout.asginaturas, null);
-                TextView campoLabel = (TextView) campo.findViewById(R.id.campo_label);
-                Button btn = (Button) campo.findViewById(R.id.button);
+                final EditText nombreEditText = new EditText(getActivity());
+                nombreEditText.setHint("Nueva Asignatura");
 
-                campoLabel.setText("Asignatura " + counter);
-                btn.setTag(counter + "");
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("tag", "Asignatura " + view.getTag() + " clicked");
-                        //Toast.makeText(this, "Asignatura" + view.getTag() +" clicked",Toast.LENGTH_SHORT).show();
-                    }
-                });
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Crear Asignatura")
+                        .setMessage("Ingrese un nombre!")
+                        .setView(nombreEditText)
+                        .setCancelable(false)
+                        .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String nombre = nombreEditText.getText().toString();
+                                asignaturas.add(nombre);
+                                asignaturasAdapter.notifyDataSetChanged();
 
-                mainLayout.addView(campo);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
             }
         });
     }
