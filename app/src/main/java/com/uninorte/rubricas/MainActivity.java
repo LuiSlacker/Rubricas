@@ -3,11 +3,8 @@ package com.uninorte.rubricas;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,19 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import static com.uninorte.rubricas.R.id.nav_asignatura;
+import com.uninorte.rubricas.fragments.Asignaturas;
+import com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas;
+import com.uninorte.rubricas.fragments.Rubricas;
 
 public class MainActivity
         extends AppCompatActivity
         implements
             NavigationView.OnNavigationItemSelectedListener,
             Estudiantes.OnFragmentInteractionListener,
-            Asignaturas.OnFragmentInteractionListener {
+            Asignaturas.OnFragmentInteractionListener,
+            Rubricas.OnFragmentInteractionListener,
+            EstudiantesDentroAsignaturas.OnFragmentInteractionListener {
 
 
 
@@ -107,6 +104,9 @@ public class MainActivity
         } else if (id == R.id.nav_asignatura) {
             fragmentClass = Asignaturas.class;
             setTitle("Asignaturas");
+        } else if (id == R.id.nav_rubricas) {
+            fragmentClass = Rubricas.class;
+            setTitle("Rubricas");
         }
 
         try {
@@ -125,5 +125,11 @@ public class MainActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //TODO closeDB
     }
 }

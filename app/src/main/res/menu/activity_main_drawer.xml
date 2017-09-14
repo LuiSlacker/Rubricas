@@ -13,6 +13,10 @@
                 android:id="@+id/nav_estudiantes"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Estudiantes" />
+            <item
+                android:id="@+id/nav_rubricas"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Rubricas" />
         </menu>
     </item>
 
