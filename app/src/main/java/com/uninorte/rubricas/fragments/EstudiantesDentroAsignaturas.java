@@ -94,11 +94,11 @@ public class EstudiantesDentroAsignaturas extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
-        List<EstudianteEntry> estudianteEntities = estudianteDAO.getAllEstudiantes();
+        List<EstudianteEntry> estudianteEntities = estudianteDAO.getAllEstudiantesForOneAsignatura(this.asignaturaId);
         estudiantes = new ArrayList<String>();
         estudiantes.addAll(mapEstudiantesToNames(estudianteEntities));
         estudiantesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, estudiantes);
-        ListView listview = (ListView) getActivity().findViewById(R.id.estudiantesListView);
+        ListView listview = (ListView) getActivity().findViewById(R.id.estudiantesDentroAsgnaturasListView);
         listview.setAdapter(estudiantesAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.estudiantes_fab);

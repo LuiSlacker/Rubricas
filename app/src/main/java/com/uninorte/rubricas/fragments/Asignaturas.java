@@ -92,7 +92,7 @@ public class Asignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        AsignaturaDAO asignaturaDAO = new AsignaturaDAO(getActivity());
+        final AsignaturaDAO asignaturaDAO = new AsignaturaDAO(getActivity());
         asignaturasEntities = asignaturaDAO.getAllAsignaturas();
         asignaturas = new ArrayList<String>();
         asignaturas.addAll(mapAsignaturasToNames(asignaturasEntities));
@@ -102,7 +102,6 @@ public class Asignaturas extends Fragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("tag", asignaturas.get(i)+"");
                 Fragment fragment = null;
                 Class fragmentClass = null;
                 fragmentClass = EstudiantesDentroAsignaturas.class;
@@ -111,6 +110,7 @@ public class Asignaturas extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                asignaturasEntities = asignaturaDAO.getAllAsignaturas(); // refetch all asigntauras for Ids
                 long asignaturaId = asignaturasEntities.get(i).getId();
                 Bundle bundle = new Bundle();
                 bundle.putLong("asignaturaId", asignaturaId);

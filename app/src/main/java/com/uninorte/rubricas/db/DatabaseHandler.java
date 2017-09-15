@@ -27,8 +27,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_ESTUDIANTES_NOMBRE = "nombre";
 
     // asignaturas_estudiantes - column names
-    public static final String KEY_ASIGNATURAS_ID = "todo_id";
-    public static final String KEY_ESTUDIANTES_ID = "tag_id";
+    public static final String KEY_ASIGNATURAS_ID = "asignaturas_id";
+    public static final String KEY_ESTUDIANTES_ID = "estudiantes_id";
 
     private static final String CREATE_TABLE_ASIGNATURAS = "CREATE TABLE " + TABLE_ASIGNATURAS + " (" +
             KEY_ID + " INTEGER PRIMARY KEY," +

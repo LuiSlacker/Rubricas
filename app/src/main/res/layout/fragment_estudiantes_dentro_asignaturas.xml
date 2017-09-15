@@ -5,9 +5,9 @@
     tools:context="com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas">
 
     <ListView
-        android:id="@+id/estudiantesListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:id="@+id/estudiantesDentroAsgnaturasListView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/estudiantes_fab"

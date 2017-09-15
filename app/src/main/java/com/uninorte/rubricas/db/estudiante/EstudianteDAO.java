@@ -11,6 +11,9 @@ import com.uninorte.rubricas.db.asignatura.AsignaturaEntry;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.icu.text.MessagePattern.ArgType.SELECT;
+import static com.uninorte.rubricas.db.DatabaseHandler.KEY_ID;
+
 
 public class EstudianteDAO {
 
@@ -49,6 +52,36 @@ public class EstudianteDAO {
         List<EstudianteEntry> estudianteList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + dbHandler.TABLE_ESTUDIANTES;
+
+        SQLiteDatabase db = dbHandler.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                EstudianteEntry estudiante = new EstudianteEntry();
+                estudiante.setId(Integer.parseInt(cursor.getString(0)));
+                estudiante.setNombre(cursor.getString(1));
+                // Adding Estudiante to list
+                estudianteList.add(estudiante);
+            } while (cursor.moveToNext());
+        }
+
+        return estudianteList;
+    }
+
+
+    /**
+     * Fetches all estudiantes for one asignatura
+     */
+    public List<EstudianteEntry> getAllEstudiantesForOneAsignatura(long asignaturaId) {
+        List<EstudianteEntry> estudianteList = new ArrayList<>();
+
+        String selectQuery = "SELECT  te." + DatabaseHandler.KEY_ID + ",te." + DatabaseHandler.KEY_ESTUDIANTES_NOMBRE + " FROM " + DatabaseHandler.TABLE_ASIGNATURAS + " ta, "
+                + DatabaseHandler.TABLE_ESTUDIANTES + " te, " + DatabaseHandler.TABLE_ASIGNATURAS_ESTUDIANTES + " tae WHERE ta."
+                + DatabaseHandler.KEY_ID + " = '" + asignaturaId + "'" + " AND ta." + DatabaseHandler.KEY_ID
+                + " = " + "tae." + DatabaseHandler.KEY_ASIGNATURAS_ID + " AND te." + DatabaseHandler.KEY_ID + " = "
+                + "tae." + DatabaseHandler.KEY_ESTUDIANTES_ID;
 
         SQLiteDatabase db = dbHandler.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

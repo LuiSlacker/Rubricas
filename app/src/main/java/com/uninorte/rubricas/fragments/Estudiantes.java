@@ -1,12 +1,24 @@
-package com.uninorte.rubricas;
+package com.uninorte.rubricas.fragments;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.uninorte.rubricas.R;
+import com.uninorte.rubricas.db.estudiante.EstudianteDAO;
+import com.uninorte.rubricas.db.estudiante.EstudianteEntry;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.uninorte.rubricas.R.layout.estudiantes;
 
 
 /**
@@ -26,15 +38,9 @@ public class Estudiantes extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String[] estudiantes = new String[] {
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf",
-            "sadfsdfsd sdfsdf"
-    };
+
+    private List<String> estudiantes;
+    private ArrayAdapter<String> estudiantesAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,6 +87,25 @@ public class Estudiantes extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
+        List<EstudianteEntry> estudianteEntities = estudianteDAO.getAllEstudiantes();
+        estudiantes = new ArrayList<String>();
+        estudiantes.addAll(mapEstudiantesToNames(estudianteEntities));
+        estudiantesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, estudiantes);
+        ListView listview = (ListView) getActivity().findViewById(R.id.estudiantesListView);
+        listview.setAdapter(estudiantesAdapter);
+    }
+
+    private List<String> mapEstudiantesToNames(List<EstudianteEntry> estudianteObjects) {
+        List<String> list = new ArrayList<String>();
+        for (EstudianteEntry estudiante: estudianteObjects) {
+            list.add(estudiante.getNombre());
+        }
+        return list;
     }
 
     @Override
