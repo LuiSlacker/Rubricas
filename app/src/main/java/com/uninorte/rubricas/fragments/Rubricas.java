@@ -1,14 +1,31 @@
 package com.uninorte.rubricas.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
+import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
+import com.uninorte.rubricas.db.asignatura.AsignaturaEntry;
+import com.uninorte.rubricas.db.rubrica.RubricaDAO;
+import com.uninorte.rubricas.db.rubrica.RubricaEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,6 +45,10 @@ public class Rubricas extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private List<String> rubricas;
+    private ArrayAdapter<String> rubricasAdapter;
+    private List<RubricaEntry> rubricasEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,6 +88,79 @@ public class Rubricas extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_rubricas, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        final RubricaDAO rubricaDAO = new RubricaDAO(getActivity());
+        rubricasEntities = rubricaDAO.getAllRubricas();
+        rubricas = new ArrayList<String>();
+        rubricas.addAll(mapRubricasToNames(rubricasEntities));
+        rubricasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, rubricas);
+        ListView listview = (ListView) getActivity().findViewById(R.id.rubricasListView);
+        listview.setAdapter(rubricasAdapter);
+        /*listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = CategoriasDentroRubricas.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                rubricasEntities = rubricaDAO.getAllRubricas(); // refetch all rubricas for Ids
+                long rubricaId = rubricasEntities.get(i).getId();
+                Bundle bundle = new Bundle();
+                bundle.putLong("rubricaId", rubricaId);
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                getActivity().setTitle(rubricas.get(i)+"");
+            }
+        });*/
+
+
+        final LinearLayout mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
+        FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fabrub);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText nombreEditText = new EditText(getActivity());
+                nombreEditText.setHint("Nueva Rúbrica");
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Crear Rúbrica")
+                        .setMessage("Ingrese un nombre!")
+                        .setView(nombreEditText)
+                        .setCancelable(false)
+                        .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String nombre = nombreEditText.getText().toString();
+                                rubricas.add(nombre);
+                                rubricasAdapter.notifyDataSetChanged();
+                                RubricaDAO rubricaDAO = new RubricaDAO(getActivity());
+                                rubricaDAO.saveNew(new RubricaEntry(nombre));
+
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
+            }
+        });
+    }
+
+
+    private List<String> mapRubricasToNames(List<RubricaEntry> rubricasObjects) {
+        List<String> list = new ArrayList<String>();
+        for (RubricaEntry rubrica: rubricasObjects) {
+            list.add(rubrica.getNombre());
+        }
+        return list;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

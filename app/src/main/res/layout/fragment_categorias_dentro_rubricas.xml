@@ -2,15 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uninorte.rubricas.fragments.Rubricas">
+    tools:context="com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas">
 
     <ListView
-        android:id="@+id/rubricasListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:id="@+id/categoriasDentroRubricasListView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabrub"
+        android:id="@+id/rubricas_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
