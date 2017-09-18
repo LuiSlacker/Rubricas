@@ -16,9 +16,6 @@ public interface RubricaDAO {
     @Query("SELECT * FROM rubrica")
     List<Rubrica> getAll();
 
-        /*@Query("SELECT * FROM asignatura where first_name LIKE  :firstName AND last_name LIKE :lastName")
-        Asignatura findByName(String firstName, String lastName);*/
-
     @Query("SELECT COUNT(*) from rubrica")
         int countUsers();
 

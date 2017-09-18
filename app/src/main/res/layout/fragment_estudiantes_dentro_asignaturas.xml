@@ -41,8 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:src="@android:drawable/ic_media_play"
-        android:layout_marginRight="@dimen/fab2_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab2_margin"
         app:layout_anchor="@id/estudiantes_fab" />
 
 </FrameLayout>
