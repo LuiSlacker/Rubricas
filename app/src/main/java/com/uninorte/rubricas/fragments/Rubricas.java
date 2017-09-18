@@ -7,22 +7,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
-import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
-import com.uninorte.rubricas.db.asignatura.AsignaturaEntry;
-import com.uninorte.rubricas.db.rubrica.RubricaDAO;
-import com.uninorte.rubricas.db.rubrica.RubricaEntry;
+import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.rubrica.Rubrica;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +44,7 @@ public class Rubricas extends Fragment {
 
     private List<String> rubricas;
     private ArrayAdapter<String> rubricasAdapter;
-    private List<RubricaEntry> rubricasEntities = new ArrayList<>();
+    private List<Rubrica> rubricasEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -92,8 +88,7 @@ public class Rubricas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        final RubricaDAO rubricaDAO = new RubricaDAO(getActivity());
-        rubricasEntities = rubricaDAO.getAllRubricas();
+        rubricasEntities = AppDatabase.getAppDatabase(getActivity()).rubricaDao().getAll();
         rubricas = new ArrayList<String>();
         rubricas.addAll(mapRubricasToNames(rubricasEntities));
         rubricasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, rubricas);
@@ -140,8 +135,10 @@ public class Rubricas extends Fragment {
                                 String nombre = nombreEditText.getText().toString();
                                 rubricas.add(nombre);
                                 rubricasAdapter.notifyDataSetChanged();
-                                RubricaDAO rubricaDAO = new RubricaDAO(getActivity());
-                                rubricaDAO.saveNew(new RubricaEntry(nombre));
+
+                                Rubrica newRubrica = new Rubrica();
+                                newRubrica.setNombre(nombre);
+                                AppDatabase.getAppDatabase(getActivity()).rubricaDao().insertAll(newRubrica);
 
                             }
                         })
@@ -155,9 +152,9 @@ public class Rubricas extends Fragment {
     }
 
 
-    private List<String> mapRubricasToNames(List<RubricaEntry> rubricasObjects) {
+    private List<String> mapRubricasToNames(List<Rubrica> rubricasObjects) {
         List<String> list = new ArrayList<String>();
-        for (RubricaEntry rubrica: rubricasObjects) {
+        for (Rubrica rubrica: rubricasObjects) {
             list.add(rubrica.getNombre());
         }
         return list;

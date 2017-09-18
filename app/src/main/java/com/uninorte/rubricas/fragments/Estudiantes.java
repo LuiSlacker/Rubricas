@@ -12,13 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
-import com.uninorte.rubricas.db.estudiante.EstudianteDAO;
-import com.uninorte.rubricas.db.estudiante.EstudianteEntry;
+import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.estudiante.Estudiante;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.uninorte.rubricas.R.layout.estudiantes;
 
 
 /**
@@ -91,8 +89,7 @@ public class Estudiantes extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
-        List<EstudianteEntry> estudianteEntities = estudianteDAO.getAllEstudiantes();
+        List<Estudiante> estudianteEntities = AppDatabase.getAppDatabase(getActivity()).estudianteDao().getAll();
         estudiantes = new ArrayList<String>();
         estudiantes.addAll(mapEstudiantesToNames(estudianteEntities));
         estudiantesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, estudiantes);
@@ -100,9 +97,9 @@ public class Estudiantes extends Fragment {
         listview.setAdapter(estudiantesAdapter);
     }
 
-    private List<String> mapEstudiantesToNames(List<EstudianteEntry> estudianteObjects) {
+    private List<String> mapEstudiantesToNames(List<Estudiante> estudianteObjects) {
         List<String> list = new ArrayList<String>();
-        for (EstudianteEntry estudiante: estudianteObjects) {
+        for (Estudiante estudiante: estudianteObjects) {
             list.add(estudiante.getNombre());
         }
         return list;

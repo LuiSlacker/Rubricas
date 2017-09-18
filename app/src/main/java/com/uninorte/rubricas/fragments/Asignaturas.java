@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
-import com.uninorte.rubricas.db.asignatura.AsignaturaEntry;
-import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
+import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.asignatura.Asignatura;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class Asignaturas extends Fragment {
 
     private List<String> asignaturas;
     private ArrayAdapter<String> asignaturasAdapter;
-    private List<AsignaturaEntry> asignaturasEntities = new ArrayList<>();
+    private List<Asignatura> asignaturasEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -92,8 +91,7 @@ public class Asignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        final AsignaturaDAO asignaturaDAO = new AsignaturaDAO(getActivity());
-        asignaturasEntities = asignaturaDAO.getAllAsignaturas();
+        asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll();
         asignaturas = new ArrayList<String>();
         asignaturas.addAll(mapAsignaturasToNames(asignaturasEntities));
         asignaturasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, asignaturas);
@@ -110,8 +108,8 @@ public class Asignaturas extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                asignaturasEntities = asignaturaDAO.getAllAsignaturas(); // refetch all asigntauras for Ids
-                long asignaturaId = asignaturasEntities.get(i).getId();
+                asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
+                long asignaturaId = asignaturasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
                 bundle.putLong("asignaturaId", asignaturaId);
                 fragment.setArguments(bundle);
@@ -140,9 +138,9 @@ public class Asignaturas extends Fragment {
                                 String nombre = nombreEditText.getText().toString();
                                 asignaturas.add(nombre);
                                 asignaturasAdapter.notifyDataSetChanged();
-                                AsignaturaDAO asignaturaDAO = new AsignaturaDAO(getActivity());
-                                asignaturaDAO.saveNew(new AsignaturaEntry(nombre));
-
+                                Asignatura newAsignatura = new Asignatura();
+                                newAsignatura.setNombre(nombre);
+                                AppDatabase.getAppDatabase(getActivity()).asignaturaDao().insertAll(newAsignatura);
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -155,9 +153,9 @@ public class Asignaturas extends Fragment {
     }
 
 
-    private List<String> mapAsignaturasToNames(List<AsignaturaEntry> asignaturasObjects) {
+    private List<String> mapAsignaturasToNames(List<Asignatura> asignaturasObjects) {
         List<String> list = new ArrayList<String>();
-        for (AsignaturaEntry asignatura: asignaturasObjects) {
+        for (Asignatura asignatura: asignaturasObjects) {
             list.add(asignatura.getNombre());
         }
         return list;

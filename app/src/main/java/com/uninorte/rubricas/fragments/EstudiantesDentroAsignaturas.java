@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +16,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
-import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
-import com.uninorte.rubricas.db.asignatura.AsignaturaEntry;
-import com.uninorte.rubricas.db.estudiante.EstudianteDAO;
-import com.uninorte.rubricas.db.estudiante.EstudianteEntry;
+import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.estudiante.Estudiante;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +90,7 @@ public class EstudiantesDentroAsignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
-        List<EstudianteEntry> estudianteEntities = estudianteDAO.getAllEstudiantesForOneAsignatura(this.asignaturaId);
+        List<Estudiante> estudianteEntities = AppDatabase.getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int)asignaturaId);
         estudiantes = new ArrayList<String>();
         estudiantes.addAll(mapEstudiantesToNames(estudianteEntities));
         estudiantesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, estudiantes);
@@ -118,8 +114,10 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                                 String nombre = nombreEditText.getText().toString();
                                 estudiantes.add(nombre);
                                 estudiantesAdapter.notifyDataSetChanged();
-                                EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
-                                estudianteDAO.saveNew(new EstudianteEntry(nombre), asignaturaId);
+                                Estudiante newEstudiante = new Estudiante();
+                                newEstudiante.setNombre(nombre);
+                                newEstudiante.setAsignaturaId((int) asignaturaId);
+                                AppDatabase.getAppDatabase(getActivity()).estudianteDao().insertAll(newEstudiante);
 
                             }
                         })
@@ -146,8 +144,6 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String nombre = nombreEditText.getText().toString();
-                                //EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
-                                //estudianteDAO.saveNew(new EstudianteEntry(nombre), asignaturaId);
 
                             }
                         })
@@ -160,9 +156,9 @@ public class EstudiantesDentroAsignaturas extends Fragment {
         });
     }
 
-    private List<String> mapEstudiantesToNames(List<EstudianteEntry> estudianteObjects) {
+    private List<String> mapEstudiantesToNames(List<Estudiante> estudianteObjects) {
         List<String> list = new ArrayList<String>();
-        for (EstudianteEntry estudiante: estudianteObjects) {
+        for (Estudiante estudiante: estudianteObjects) {
             list.add(estudiante.getNombre());
         }
         return list;
