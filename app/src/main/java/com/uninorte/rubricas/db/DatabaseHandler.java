@@ -49,8 +49,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_SUBCATEGORY_LINEAMIENTO4 = "lineamiento_4";
 
     private static final String CREATE_TABLE_ASIGNATURAS = "CREATE TABLE " + TABLE_ASIGNATURAS + " (" +
-            KEY_ID + " INTEGER PRIMARY KEY," +KEY_ASIGNATURAS_NOMBRE + "STRING"+KEY_ASIGNATURAS_CATEGORY+" INTEGER,"+
-            KEY_ASIGNATURAS_CATEGORY_WEIGHT+"DOUBLE)";
+            KEY_ID + " INTEGER PRIMARY KEY," + KEY_ASIGNATURAS_NOMBRE + " STRING," + KEY_ASIGNATURAS_CATEGORY + " INTEGER,"+
+            KEY_ASIGNATURAS_CATEGORY_WEIGHT+" DOUBLE)";
 
     private static final String CREATE_TABLE_ESTUDIANTES = "CREATE TABLE " + TABLE_ESTUDIANTES + " (" +
             KEY_ID + " INTEGER PRIMARY KEY," +
