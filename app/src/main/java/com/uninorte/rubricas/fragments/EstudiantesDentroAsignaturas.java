@@ -130,6 +130,34 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                         .show();
             }
         });
+
+        FloatingActionButton fabEvaluaciones = (FloatingActionButton) getView().findViewById(R.id.fab_evaluaciones);
+        fabEvaluaciones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText nombreEditText = new EditText(getActivity());
+                nombreEditText.setHint("Nuevo Evaluacion");
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Crear Evaluacion")
+                        .setMessage("Ingrese un nombre!")
+                        .setView(nombreEditText)
+                        .setCancelable(false)
+                        .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String nombre = nombreEditText.getText().toString();
+                                //EstudianteDAO estudianteDAO = new EstudianteDAO(getActivity());
+                                //estudianteDAO.saveNew(new EstudianteEntry(nombre), asignaturaId);
+
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     private List<String> mapEstudiantesToNames(List<EstudianteEntry> estudianteObjects) {
