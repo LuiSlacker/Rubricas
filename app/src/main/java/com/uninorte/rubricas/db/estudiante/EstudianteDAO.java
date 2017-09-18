@@ -19,11 +19,8 @@ public interface EstudianteDAO {
             + "WHERE estudiante.asignatura_id = (:asignaturaId)")
     List<Estudiante> getAllForOneAsignatura(int asignaturaId);
 
-    /*@Query("SELECT * FROM asignatura where first_name LIKE  :firstName AND last_name LIKE :lastName")
-    Asignatura findByName(String firstName, String lastName);*/
-
     @Query("SELECT COUNT(*) from estudiante")
-    int countUsers();
+    int countEstudiantes();
 
     @Insert
     void insertAll(Estudiante... estudiantes);

@@ -13,11 +13,8 @@ public interface AsignaturaDAO {
     @Query("SELECT * FROM asignatura")
     List<Asignatura> getAll();
 
-    /*@Query("SELECT * FROM asignatura where first_name LIKE  :firstName AND last_name LIKE :lastName")
-    Asignatura findByName(String firstName, String lastName);*/
-
     @Query("SELECT COUNT(*) from asignatura")
-    int countUsers();
+    int countAsignaturas();
 
     @Insert
     void insertAll(Asignatura... asignaturas);
