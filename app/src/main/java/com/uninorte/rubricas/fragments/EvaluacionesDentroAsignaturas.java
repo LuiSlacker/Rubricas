@@ -1,5 +1,6 @@
 package com.uninorte.rubricas.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -11,14 +12,18 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.asignatura.Asignatura;
 import com.uninorte.rubricas.db.estudiante.Estudiante;
 import com.uninorte.rubricas.db.evaluacion.Evaluacion;
+import com.uninorte.rubricas.db.rubrica.Rubrica;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +50,11 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
 
     private List<String> evaluaciones;
     private ArrayAdapter<String> evaluacionesAdapter;
+    private ArrayAdapter<String> rubricasAdapter;
     private long asignaturaId;
+    private int rubricaId;
+    private List<String> rubricas;
+    private List<Rubrica> rubricasEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -102,22 +111,27 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText nombreEditText = new EditText(getActivity());
-                nombreEditText.setHint("Nueva Evaluacion");
+                rubricasEntities = AppDatabase.getAppDatabase(getActivity()).rubricaDao().getAll();
+                rubricas = new ArrayList<String>();
+                rubricas.addAll(mapRubricasToNames(rubricasEntities));
+                rubricasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, rubricas);
 
-                new AlertDialog.Builder(getActivity())
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setTitle("Crear Evaluacion")
                         .setMessage("Ingrese un nombre!")
-                        .setView(nombreEditText)
+                        .setView(R.layout.custom_dialog)
                         .setCancelable(false)
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                String nombre = nombreEditText.getText().toString();
+                                Dialog dialogObj = Dialog.class.cast(dialog);
+                                EditText edt =(EditText) dialogObj.findViewById(R.id.evaluacion_nombre);
+                                String nombre = edt.getText().toString();
                                 evaluaciones.add(nombre);
                                 evaluacionesAdapter.notifyDataSetChanged();
                                 Evaluacion newEvaluacion = new Evaluacion();
                                 newEvaluacion.setNombre(nombre);
                                 newEvaluacion.setAsignaturaId((int) asignaturaId);
+                                newEvaluacion.setRubricaId(rubricaId);
                                 AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insertAll(newEvaluacion);
 
                             }
@@ -125,8 +139,25 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                             }
-                        })
-                        .show();
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                Spinner spinner = (Spinner) dialog.findViewById(R.id.dialog_spinner);
+                rubricasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(rubricasAdapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        rubricaId = (int) rubricasEntities.get(i).getUid();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
             }
         });
     }
@@ -135,6 +166,14 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         List<String> list = new ArrayList<String>();
         for (Estudiante estudiante: estudianteObjects) {
             list.add(estudiante.getNombre());
+        }
+        return list;
+    }
+
+    private List<String> mapRubricasToNames(List<Rubrica> rubricasObjects) {
+        List<String> list = new ArrayList<String>();
+        for (Rubrica rubrica: rubricasObjects) {
+            list.add(rubrica.getNombre());
         }
         return list;
     }

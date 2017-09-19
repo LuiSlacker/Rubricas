@@ -6,11 +6,16 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.rubrica.Rubrica;
 
 @Entity(tableName = "evaluacion",
-        foreignKeys = @ForeignKey(entity = Asignatura.class,
-            parentColumns = "uid",
-            childColumns = "asignatura_id"))
+        foreignKeys = {
+                @ForeignKey(entity = Asignatura.class,
+                        parentColumns = "uid",
+                        childColumns = "asignatura_id"),
+                @ForeignKey(entity = Rubrica.class,
+                        parentColumns = "uid",
+                        childColumns = "rubrica_id")})
 public class Evaluacion {
 
     @PrimaryKey(autoGenerate = true)
@@ -21,6 +26,9 @@ public class Evaluacion {
 
     @ColumnInfo(name = "asignatura_id")
     public int asignaturaId;
+
+    @ColumnInfo(name = "rubrica_id")
+    public int rubricaId;
 
     public int getUid() {
         return uid;
@@ -44,5 +52,13 @@ public class Evaluacion {
 
     public void setAsignaturaId(int asignaturaId) {
         this.asignaturaId = asignaturaId;
+    }
+
+    public int getRubricaId() {
+        return rubricaId;
+    }
+
+    public void setRubricaId(int rubricaId) {
+        this.rubricaId = rubricaId;
     }
 }
