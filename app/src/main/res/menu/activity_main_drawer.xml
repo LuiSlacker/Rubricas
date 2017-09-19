@@ -17,6 +17,10 @@
                 android:id="@+id/nav_rubricas"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Rubricas" />
+            <item
+                android:id="@+id/nav_test"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Tab Test" />
         </menu>
     </item>
 

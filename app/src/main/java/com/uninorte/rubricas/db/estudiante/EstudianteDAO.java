@@ -28,4 +28,3 @@ public interface EstudianteDAO {
     @Delete
     void delete(Estudiante estudiante);
 }
-
