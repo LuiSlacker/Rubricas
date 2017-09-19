@@ -19,4 +19,30 @@ public class Evaluacion {
     @ColumnInfo(name = "nombre")
     private String nombre;
 
+    @ColumnInfo(name = "asignatura_id")
+    public int asignaturaId;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public int getAsignaturaId() {
+        return asignaturaId;
+    }
+
+    public void setAsignaturaId(int asignaturaId) {
+        this.asignaturaId = asignaturaId;
+    }
 }

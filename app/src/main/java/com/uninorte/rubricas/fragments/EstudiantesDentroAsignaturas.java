@@ -82,7 +82,7 @@ public class EstudiantesDentroAsignaturas extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        asignaturaId = getArguments().getLong("asignaturaId");
+        asignaturaId = getArguments().getInt("asignaturaId");
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_estudiantes_dentro_asignaturas, container, false);
@@ -118,32 +118,6 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                                 newEstudiante.setNombre(nombre);
                                 newEstudiante.setAsignaturaId((int) asignaturaId);
                                 AppDatabase.getAppDatabase(getActivity()).estudianteDao().insertAll(newEstudiante);
-
-                            }
-                        })
-                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                            }
-                        })
-                        .show();
-            }
-        });
-
-        FloatingActionButton fabEvaluaciones = (FloatingActionButton) getView().findViewById(R.id.fab_evaluaciones);
-        fabEvaluaciones.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final EditText nombreEditText = new EditText(getActivity());
-                nombreEditText.setHint("Nuevo Evaluacion");
-
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Crear Evaluacion")
-                        .setMessage("Ingrese un nombre!")
-                        .setView(nombreEditText)
-                        .setCancelable(false)
-                        .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                String nombre = nombreEditText.getText().toString();
 
                             }
                         })

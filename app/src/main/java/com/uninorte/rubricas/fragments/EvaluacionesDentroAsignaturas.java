@@ -7,35 +7,33 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
-import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.estudiante.Estudiante;
+import com.uninorte.rubricas.db.evaluacion.Evaluacion;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.media.CamcorderProfile.get;
+import static com.uninorte.rubricas.R.layout.estudiantes;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Asignaturas.OnFragmentInteractionListener} interface
+ * {@link EvaluacionesDentroAsignaturas.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Asignaturas#newInstance} factory method to
+ * Use the {@link EvaluacionesDentroAsignaturas#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Asignaturas extends Fragment {
+public class EvaluacionesDentroAsignaturas extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,13 +43,13 @@ public class Asignaturas extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private List<String> asignaturas;
-    private ArrayAdapter<String> asignaturasAdapter;
-    private List<Asignatura> asignaturasEntities = new ArrayList<>();
+    private List<String> evaluaciones;
+    private ArrayAdapter<String> evaluacionesAdapter;
+    private long asignaturaId;
 
     private OnFragmentInteractionListener mListener;
 
-    public Asignaturas() {
+    public EvaluacionesDentroAsignaturas() {
         // Required empty public constructor
     }
 
@@ -61,11 +59,11 @@ public class Asignaturas extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Asignaturas.
+     * @return A new instance of fragment EvaluacionesDentroAsignaturas.
      */
     // TODO: Rename and change types and number of parameters
-    public static Asignaturas newInstance(String param1, String param2) {
-        Asignaturas fragment = new Asignaturas();
+    public static EvaluacionesDentroAsignaturas newInstance(String param1, String param2) {
+        EvaluacionesDentroAsignaturas fragment = new EvaluacionesDentroAsignaturas();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -85,62 +83,43 @@ public class Asignaturas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        asignaturaId = getArguments().getInt("asignaturaId");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_asignaturas, container, false);
+        return inflater.inflate(R.layout.fragment_evaluaciones_dentro_asignaturas, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll();
-        asignaturas = new ArrayList<String>();
-        asignaturas.addAll(mapAsignaturasToNames(asignaturasEntities));
-        asignaturasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, asignaturas);
-        ListView listview = (ListView) getActivity().findViewById(R.id.asignaturasListView);
-        listview.setAdapter(asignaturasAdapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Fragment fragment = null;
-                Class fragmentClass = null;
-                fragmentClass = AsignaturasTabWrapper.class;
-                try {
-                    fragment = (Fragment) fragmentClass.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
-                long asignaturaId = asignaturasEntities.get(i).getUid();
-                Bundle bundle = new Bundle();
-                bundle.putInt("asignaturaId", (int) asignaturaId);
-                fragment.setArguments(bundle);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                getActivity().setTitle(asignaturas.get(i)+"");
-            }
-        });
+        List<Estudiante> estudianteEntities = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId);
+        evaluaciones = new ArrayList<String>();
+        evaluaciones.addAll(mapEstudiantesToNames(estudianteEntities));
+        evaluacionesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, evaluaciones);
+        ListView listview = (ListView) getActivity().findViewById(R.id.evaluacionesDentroAsignaturas);
+        listview.setAdapter(evaluacionesAdapter);
 
-
-        final LinearLayout mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
-        FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.evaluaciones_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final EditText nombreEditText = new EditText(getActivity());
-                nombreEditText.setHint("Nueva Asignatura");
+                nombreEditText.setHint("Nueva Evaluacion");
 
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Crear Asignatura")
+                        .setTitle("Crear Evaluacion")
                         .setMessage("Ingrese un nombre!")
                         .setView(nombreEditText)
                         .setCancelable(false)
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String nombre = nombreEditText.getText().toString();
-                                asignaturas.add(nombre);
-                                asignaturasAdapter.notifyDataSetChanged();
-                                Asignatura newAsignatura = new Asignatura();
-                                newAsignatura.setNombre(nombre);
-                                AppDatabase.getAppDatabase(getActivity()).asignaturaDao().insertAll(newAsignatura);
+                                evaluaciones.add(nombre);
+                                evaluacionesAdapter.notifyDataSetChanged();
+                                Evaluacion newEvaluacion = new Evaluacion();
+                                newEvaluacion.setNombre(nombre);
+                                newEvaluacion.setAsignaturaId((int) asignaturaId);
+                                AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insertAll(newEvaluacion);
+
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -152,11 +131,10 @@ public class Asignaturas extends Fragment {
         });
     }
 
-
-    private List<String> mapAsignaturasToNames(List<Asignatura> asignaturasObjects) {
+    private List<String> mapEstudiantesToNames(List<Estudiante> estudianteObjects) {
         List<String> list = new ArrayList<String>();
-        for (Asignatura asignatura: asignaturasObjects) {
-            list.add(asignatura.getNombre());
+        for (Estudiante estudiante: estudianteObjects) {
+            list.add(estudiante.getNombre());
         }
         return list;
     }

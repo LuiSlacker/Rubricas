@@ -3,25 +3,26 @@ package com.uninorte.rubricas.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.uninorte.rubricas.PagerAdapter;
 import com.uninorte.rubricas.R;
-
-import static android.R.attr.fragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Tabs.OnFragmentInteractionListener} interface
+ * {@link AsignaturasTabWrapper.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Tabs#newInstance} factory method to
+ * Use the {@link AsignaturasTabWrapper#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Tabs extends Fragment {
+public class AsignaturasTabWrapper extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,12 +31,11 @@ public class Tabs extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private FragmentTabHost mTabHost;
+    private long asignaturaId;
 
     private OnFragmentInteractionListener mListener;
 
-    public Tabs() {
+    public AsignaturasTabWrapper() {
         // Required empty public constructor
     }
 
@@ -45,11 +45,11 @@ public class Tabs extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Tabs.
+     * @return A new instance of fragment AsignaturasTabWrapper.
      */
     // TODO: Rename and change types and number of parameters
-    public static Tabs newInstance(String param1, String param2) {
-        Tabs fragment = new Tabs();
+    public static AsignaturasTabWrapper newInstance(String param1, String param2) {
+        AsignaturasTabWrapper fragment = new AsignaturasTabWrapper();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -69,26 +69,46 @@ public class Tabs extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        asignaturaId = getArguments().getInt("asignaturaId");
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_tabs,container, false);
+        return inflater.inflate(R.layout.fragment_asignaturas_tab_wrapper, container, false);
+    }
 
-
-        mTabHost = (FragmentTabHost)rootView.findViewById(android.R.id.tabhost);
-        mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
-
-        long asignaturaId = getArguments().getLong("asignaturaId");
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Estudiantes"));
+        tabLayout.addTab(tabLayout.newTab().setText("Evaluaciones"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         Bundle bundle = new Bundle();
-        bundle.putLong("asignaturaId", asignaturaId);
+        bundle.putInt("asignaturaId", (int) asignaturaId);
 
-        mTabHost.addTab(mTabHost.newTabSpec("fragmentb").setIndicator("Evaluaciones"),
-                Evaluaciones.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("fragmentc").setIndicator("Estudiantes"),
-                EstudiantesDentroAsignaturas.class, bundle);
+        final ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter
+                (getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
 
-        return rootView;
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

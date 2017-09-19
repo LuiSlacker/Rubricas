@@ -9,12 +9,15 @@ import com.uninorte.rubricas.db.asignatura.Asignatura;
 import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
 import com.uninorte.rubricas.db.estudiante.Estudiante;
 import com.uninorte.rubricas.db.estudiante.EstudianteDAO;
+import com.uninorte.rubricas.db.evaluacion.Evaluacion;
+import com.uninorte.rubricas.db.evaluacion.EvaluacionDAO;
 import com.uninorte.rubricas.db.rubrica.Rubrica;
 import com.uninorte.rubricas.db.rubrica.RubricaDAO;
 
 @Database(entities = {
         Asignatura.class,
         Estudiante.class,
+        Evaluacion.class,
         Rubrica.class},
         version = 1)
 public abstract class AppDatabase extends RoomDatabase {
@@ -23,6 +26,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AsignaturaDAO asignaturaDao();
     public abstract EstudianteDAO estudianteDao();
+    public abstract EvaluacionDAO evaluacionDao();
     public abstract RubricaDAO rubricaDao();
 
     public static AppDatabase getAppDatabase(Context context) {

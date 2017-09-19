@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas">
+    tools:context="com.uninorte.rubricas.fragments.EvaluacionesDentroAsignaturas">
 
     <ListView
-    android:id="@+id/estudiantesDentroAsgnaturasListView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+        android:id="@+id/evaluacionesDentroAsignaturas"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/estudiantes_fab"
+        android:id="@+id/evaluaciones_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

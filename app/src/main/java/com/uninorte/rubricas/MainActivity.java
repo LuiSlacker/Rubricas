@@ -14,13 +14,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.uninorte.rubricas.db.estudiante.Estudiante;
 import com.uninorte.rubricas.fragments.Asignaturas;
 import com.uninorte.rubricas.fragments.Estudiantes;
 import com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas;
-import com.uninorte.rubricas.fragments.Evaluaciones;
+import com.uninorte.rubricas.fragments.EvaluacionesDentroAsignaturas;
 import com.uninorte.rubricas.fragments.Rubricas;
-import com.uninorte.rubricas.fragments.Tabs;
+import com.uninorte.rubricas.fragments.AsignaturasTabWrapper;
 
 public class MainActivity
         extends AppCompatActivity
@@ -30,9 +29,8 @@ public class MainActivity
             Asignaturas.OnFragmentInteractionListener,
             Rubricas.OnFragmentInteractionListener,
             EstudiantesDentroAsignaturas.OnFragmentInteractionListener,
-            Tabs.OnFragmentInteractionListener,
-            Evaluaciones.OnFragmentInteractionListener {
-
+            AsignaturasTabWrapper.OnFragmentInteractionListener,
+            EvaluacionesDentroAsignaturas.OnFragmentInteractionListener {
 
 
     @Override
@@ -113,21 +111,12 @@ public class MainActivity
         } else if (id == R.id.nav_rubricas) {
             fragmentClass = Rubricas.class;
             setTitle("Rubricas");
-        } else if (id == R.id.nav_test) {
-            fragmentClass = Tabs.class;
-            setTitle("Tab Test");
         }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        if (id == R.id.nav_test) {
-            Bundle bundle = new Bundle();
-            bundle.putLong("asignaturaId", 1);
-            fragment.setArguments(bundle);
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
