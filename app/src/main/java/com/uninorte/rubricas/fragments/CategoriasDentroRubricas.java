@@ -1,5 +1,6 @@
 package com.uninorte.rubricas.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -20,21 +21,21 @@ import android.widget.ListView;
 
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
-import com.uninorte.rubricas.db.rubrica.Rubrica;
+import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.categoria.Categoria;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Rubricas.OnFragmentInteractionListener} interface
+ * {@link CategoriasDentroRubricas.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Rubricas#newInstance} factory method to
+ * Use the {@link CategoriasDentroRubricas#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Rubricas extends Fragment {
+public class CategoriasDentroRubricas extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,13 +45,15 @@ public class Rubricas extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private List<String> rubricas;
-    private ArrayAdapter<String> rubricasAdapter;
-    private List<Rubrica> rubricasEntities = new ArrayList<>();
+    private List<String> categorias;
+    private ArrayAdapter<String> categoriasAdapter;
+    private List<Categoria> categoriasEntities = new ArrayList<>();
+
+    private int rubricaId;
 
     private OnFragmentInteractionListener mListener;
 
-    public Rubricas() {
+    public CategoriasDentroRubricas() {
         // Required empty public constructor
     }
 
@@ -60,11 +63,11 @@ public class Rubricas extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Rubricas.
+     * @return A new instance of fragment CategoriasDentroRubricas.
      */
     // TODO: Rename and change types and number of parameters
-    public static Rubricas newInstance(String param1, String param2) {
-        Rubricas fragment = new Rubricas();
+    public static CategoriasDentroRubricas newInstance(String param1, String param2) {
+        CategoriasDentroRubricas fragment = new CategoriasDentroRubricas();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -84,64 +87,67 @@ public class Rubricas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        rubricaId = getArguments().getInt("rubricaId");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rubricas, container, false);
+        return inflater.inflate(R.layout.fragment_categorias_dentro_rubricas, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        rubricasEntities = AppDatabase.getAppDatabase(getActivity()).rubricaDao().getAll();
-        rubricas = new ArrayList<String>();
-        rubricas.addAll(mapRubricasToNames(rubricasEntities));
-        rubricasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, rubricas);
-        ListView listview = (ListView) getActivity().findViewById(R.id.rubricasListView);
-        listview.setAdapter(rubricasAdapter);
+        categoriasEntities = AppDatabase.getAppDatabase(getActivity()).categoriaDao().getAllForOneRubrica(rubricaId);
+        categorias = new ArrayList<String>();
+        categorias.addAll(mapCategoriasToNames(categoriasEntities));
+        categoriasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, categorias);
+        ListView listview = (ListView) getActivity().findViewById(R.id.categoriasListView);
+        listview.setAdapter(categoriasAdapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Fragment fragment = null;
                 Class fragmentClass = null;
-                fragmentClass = CategoriasDentroRubricas.class;
+                fragmentClass = ElementosDentroCategorias.class;
                 try {
                     fragment = (Fragment) fragmentClass.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                rubricasEntities = AppDatabase.getAppDatabase(getActivity()).rubricaDao().getAll(); // refetch all rubricas for Ids
-                long rubricaId = rubricasEntities.get(i).getUid();
+                categoriasEntities = AppDatabase.getAppDatabase(getActivity()).categoriaDao().getAllForOneRubrica(rubricaId); // refetch all categorias for Ids
+                long categoriaId = categoriasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
-                bundle.putInt("rubricaId", (int) rubricaId);
+                bundle.putInt("categoriaId", (int) categoriaId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                getActivity().setTitle(rubricas.get(i)+"");
+                getActivity().setTitle(categorias.get(i)+"");
             }
         });
 
 
         final LinearLayout mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);
-        FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.fabrub);
+        FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.categorias_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText nombreEditText = new EditText(getActivity());
-                nombreEditText.setHint("Nueva Rúbrica");
-
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Crear Rúbrica")
+                        .setTitle("Crear Categoria")
                         .setMessage("Ingrese un nombre!")
-                        .setView(nombreEditText)
+                        .setView(R.layout.custom_categorias_dialog)
                         .setCancelable(false)
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                String nombre = nombreEditText.getText().toString();
-                                rubricas.add(nombre);
-                                rubricasAdapter.notifyDataSetChanged();
-
-                                Rubrica newRubrica = new Rubrica();
-                                newRubrica.setNombre(nombre);
-                                AppDatabase.getAppDatabase(getActivity()).rubricaDao().insertAll(newRubrica);
-
+                                Dialog dialogObj = Dialog.class.cast(dialog);
+                                EditText edtNombre = (EditText) dialogObj.findViewById(R.id.categorias_nombre);
+                                EditText edtPeso = (EditText) dialogObj.findViewById(R.id.categorias_peso);
+                                String nombre = edtNombre.getText().toString();
+                                int peso = Integer.parseInt(edtPeso.getText().toString());
+                                categorias.add(nombre);
+                                categoriasAdapter.notifyDataSetChanged();
+                                Categoria newCategoria = new Categoria();
+                                newCategoria.setNombre(nombre);
+                                newCategoria.setPeso(peso);
+                                newCategoria.setRubricaId((int) rubricaId);
+                                AppDatabase.getAppDatabase(getActivity()).categoriaDao().insertAll(newCategoria);
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -154,10 +160,10 @@ public class Rubricas extends Fragment {
     }
 
 
-    private List<String> mapRubricasToNames(List<Rubrica> rubricasObjects) {
+    private List<String> mapCategoriasToNames(List<Categoria> categoriasObjects) {
         List<String> list = new ArrayList<String>();
-        for (Rubrica rubrica: rubricasObjects) {
-            list.add(rubrica.getNombre());
+        for (Categoria categoria: categoriasObjects) {
+            list.add(categoria.getNombre());
         }
         return list;
     }

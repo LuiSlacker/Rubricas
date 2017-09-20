@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.uninorte.rubricas.fragments.Asignaturas;
+import com.uninorte.rubricas.fragments.CategoriasDentroRubricas;
+import com.uninorte.rubricas.fragments.ElementosDentroCategorias;
 import com.uninorte.rubricas.fragments.Estudiantes;
 import com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas;
 import com.uninorte.rubricas.fragments.EvaluacionesDentroAsignaturas;
@@ -30,8 +32,9 @@ public class MainActivity
             Rubricas.OnFragmentInteractionListener,
             EstudiantesDentroAsignaturas.OnFragmentInteractionListener,
             AsignaturasTabWrapper.OnFragmentInteractionListener,
-            EvaluacionesDentroAsignaturas.OnFragmentInteractionListener {
-
+            EvaluacionesDentroAsignaturas.OnFragmentInteractionListener,
+            CategoriasDentroRubricas.OnFragmentInteractionListener,
+            ElementosDentroCategorias.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
