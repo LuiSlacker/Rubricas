@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,27 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         evaluacionesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, evaluaciones);
         ListView listview = (ListView) getActivity().findViewById(R.id.evaluacionesDentroAsignaturas);
         listview.setAdapter(evaluacionesAdapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = SingleEvaluacion.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
+                //long asignaturaId = asignaturasEntities.get(i).getUid();
+                /*Bundle bundle = new Bundle();
+                bundle.putInt("asignaturaId", (int) asignaturaId);
+                fragment.setArguments(bundle);*/
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                //getActivity().setTitle(asignaturas.get(i)+"");
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.evaluaciones_fab);
         fab.setOnClickListener(new View.OnClickListener() {
