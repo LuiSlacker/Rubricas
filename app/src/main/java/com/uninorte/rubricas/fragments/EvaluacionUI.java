@@ -22,6 +22,8 @@ import com.uninorte.rubricas.db.evaluacion.Evaluacion;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.widget.LinearLayout.LayoutParams;
+
 
 import static com.uninorte.rubricas.R.id.spinner;
 import static com.uninorte.rubricas.db.AppDatabase.getAppDatabase;
@@ -94,7 +96,9 @@ public class EvaluacionUI extends Fragment {
             TextView categoriaHeading = new TextView(getActivity());
             categoriaHeading.setText(categoria.getNombre());
             categoriaHeading.setTextSize(20);
-            mainLayout.addView(categoriaHeading);
+            LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            params.setMargins(18, 4, 0, 0);
+            mainLayout.addView(categoriaHeading, params);
             List<Elemento> elementos = fetchElementosForCategoria((int) categoria.getUid());
             for (Elemento elemento : elementos) {
                 View singleElemento = getLayoutInflater().inflate(R.layout.single_elemento_evaluacion, null);

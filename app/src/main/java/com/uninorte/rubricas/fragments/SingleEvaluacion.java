@@ -23,7 +23,9 @@ import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.data;
 import static android.R.attr.fragment;
+import static android.media.CamcorderProfile.get;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +47,7 @@ public class SingleEvaluacion extends Fragment {
     private ArrayList<EvaluacionDataModel> dataModels;
     private static CustomEvaluacionesAdapter adapter;
     private int evaluacionId;
+    private String evaluacionNombre;
     private List<CalificacionEvaluacion> calificacionEvaluacionEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
@@ -84,6 +87,7 @@ public class SingleEvaluacion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         evaluacionId = getArguments().getInt("evaluacionId");
+        evaluacionNombre = getArguments().getString("evaluacionNombre");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_single_evaluacion, container, false);
     }
@@ -122,7 +126,7 @@ public class SingleEvaluacion extends Fragment {
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                getActivity().setTitle("Calificacion");
+                getActivity().setTitle(evaluacionNombre + " - " + dataModels.get(i).getEstudiante());
             }
         });
     }
