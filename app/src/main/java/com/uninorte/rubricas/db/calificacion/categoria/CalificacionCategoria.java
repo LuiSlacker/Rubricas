@@ -31,6 +31,9 @@ public class CalificacionCategoria {
     @ColumnInfo(name = "categoria_id")
     public int categoriaId;
 
+    @ColumnInfo(name = "categoria_nombre")
+    public String categoriaNombre;
+
     public int getUid() {
         return uid;
     }
@@ -53,5 +56,13 @@ public class CalificacionCategoria {
 
     public void setCategoriaId(int categoriaId) {
         this.categoriaId = categoriaId;
+    }
+
+    public String getCategoriaNombre() {
+        return categoriaNombre;
+    }
+
+    public void setCategoriaNombre(String categoriaNombre) {
+        this.categoriaNombre = categoriaNombre;
     }
 }

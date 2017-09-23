@@ -17,10 +17,10 @@ public interface RubricaDAO {
     List<Rubrica> getAll();
 
     @Query("SELECT COUNT(*) from rubrica")
-        int countUsers();
+    int countUsers();
 
     @Insert
-        void insertAll(Rubrica... rubricas);
+    void insertAll(Rubrica... rubricas);
 
     @Delete
     void delete(Rubrica rubrica);

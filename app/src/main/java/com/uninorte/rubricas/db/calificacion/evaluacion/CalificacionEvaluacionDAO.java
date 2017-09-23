@@ -19,6 +19,9 @@ public interface CalificacionEvaluacionDAO {
     @Insert
     void insertAll(CalificacionEvaluacion... calificacionEvaluacions);
 
+    @Insert
+    long insert(CalificacionEvaluacion calificacionEvaluacion);
+
     @Delete
     void delete(CalificacionEvaluacion calificacionEvaluacion);
 }

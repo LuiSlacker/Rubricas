@@ -32,6 +32,9 @@ public class CalificacionElemento {
     @ColumnInfo(name = "elemento_id")
     public int elementoId;
 
+    @ColumnInfo(name = "elemento_nombre")
+    public String elementoNombre;
+
     public int getUid() {
         return uid;
     }
@@ -62,5 +65,13 @@ public class CalificacionElemento {
 
     public void setElementoId(int elementoId) {
         this.elementoId = elementoId;
+    }
+
+    public String getElementoNombre() {
+        return elementoNombre;
+    }
+
+    public void setElementoNombre(String elementoNombre) {
+        this.elementoNombre = elementoNombre;
     }
 }

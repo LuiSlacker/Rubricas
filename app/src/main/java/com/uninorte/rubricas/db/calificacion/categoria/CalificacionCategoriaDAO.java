@@ -21,6 +21,9 @@ public interface CalificacionCategoriaDAO {
     @Insert
     void insertAll(CalificacionCategoria... calificacionCategorias);
 
+    @Insert
+    long insert(CalificacionCategoria calificacionCategoria);
+
     @Delete
     void delete(CalificacionCategoria calificacionCategoria);
 }

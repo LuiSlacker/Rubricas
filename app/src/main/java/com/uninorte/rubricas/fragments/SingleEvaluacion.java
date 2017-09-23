@@ -10,21 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.uninorte.rubricas.CustomEvaluacionesAdapter;
-import com.uninorte.rubricas.EvaluacionDataModel;
+import com.uninorte.rubricas.helper.CustomEvaluacionesAdapter;
+import com.uninorte.rubricas.helper.EvaluacionDataModel;
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
-import com.uninorte.rubricas.db.asignatura.Asignatura;
 import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.data;
-import static android.R.attr.fragment;
 import static android.media.CamcorderProfile.get;
 
 /**

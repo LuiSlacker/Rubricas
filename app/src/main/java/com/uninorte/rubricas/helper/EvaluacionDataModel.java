@@ -1,4 +1,4 @@
-package com.uninorte.rubricas;
+package com.uninorte.rubricas.helper;
 
 
 public class EvaluacionDataModel {

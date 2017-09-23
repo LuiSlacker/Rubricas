@@ -1,14 +1,15 @@
-package com.uninorte.rubricas;
+package com.uninorte.rubricas.helper;
 
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.uninorte.rubricas.R;
+import com.uninorte.rubricas.helper.EvaluacionDataModel;
 
 import java.util.ArrayList;
 

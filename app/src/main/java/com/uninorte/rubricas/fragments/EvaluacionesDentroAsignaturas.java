@@ -22,7 +22,11 @@ import android.widget.Spinner;
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
 import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.calificacion.categoria.CalificacionCategoria;
+import com.uninorte.rubricas.db.calificacion.elemento.CalificacionElemento;
 import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
+import com.uninorte.rubricas.db.categoria.Categoria;
+import com.uninorte.rubricas.db.elementos.Elemento;
 import com.uninorte.rubricas.db.estudiante.Estudiante;
 import com.uninorte.rubricas.db.evaluacion.Evaluacion;
 import com.uninorte.rubricas.db.rubrica.Rubrica;
@@ -161,7 +165,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                                 newEvaluacion.setAsignaturaId((int) asignaturaId);
                                 newEvaluacion.setRubricaId(rubricaId);
                                 long evaluacionID = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insert(newEvaluacion);
-                                populateCalificacionEvaluacionTable(evaluacionID);
+                                populateCalificacionTables(evaluacionID);
 
                             }
                         })
@@ -191,20 +195,43 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         });
     }
 
-    private void populateCalificacionEvaluacionTable(long evaluacionID) {
-        List<CalificacionEvaluacion> calificacionEvaluaciones = new ArrayList<>();
+    private void populateCalificacionTables(long evaluacionID) {
+        //List<CalificacionEvaluacion> calificacionEvaluaciones = new ArrayList<>();
         List<Estudiante> estudiantesdentroAsignatura = getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int) asignaturaId);
         for (Estudiante estudiante : estudiantesdentroAsignatura) {
             CalificacionEvaluacion newCalificacionEvaluacion = new CalificacionEvaluacion();
             newCalificacionEvaluacion.setEvaluacionId((int) evaluacionID);
             newCalificacionEvaluacion.setEstudianteId(estudiante.getUid());
             newCalificacionEvaluacion.setEstudianteNombre(estudiante.getNombre());
-            calificacionEvaluaciones.add(newCalificacionEvaluacion);
+
+            long newCalificacionEvaluacionId = getAppDatabase(getActivity()).calificacionEvaluacionDao().insert(newCalificacionEvaluacion);
+
+            List<Categoria> categorias = AppDatabase.getAppDatabase(getActivity()).categoriaDao().getAllForOneRubrica(rubricaId);
+            for (Categoria categoria : categorias) {
+                CalificacionCategoria newCalificacionCategoria = new CalificacionCategoria();
+                newCalificacionCategoria.setCategoriaId(categoria.getUid());
+                newCalificacionCategoria.setCategoriaNombre(categoria.getNombre());
+                newCalificacionCategoria.setCalificacionEvaluacionId((int) newCalificacionEvaluacionId);
+                long newCalificacionCategoriaId = AppDatabase.getAppDatabase(getActivity()).calificacionCategoriaDao().insert(newCalificacionCategoria);
+
+                List<Elemento> elementos = AppDatabase.getAppDatabase(getActivity()).elementoDao().getAllForOneCategoria(categoria.getUid());
+                for (Elemento elemento : elementos) {
+                    CalificacionElemento newCalificacionElemento = new CalificacionElemento();
+                    newCalificacionElemento.setElementoId(elemento.getUid());
+                    newCalificacionElemento.setElementoNombre(elemento.getNombre());
+                    newCalificacionElemento.setCalificacionCategoriaId((int) newCalificacionCategoriaId);
+                    AppDatabase.getAppDatabase(getActivity()).calificacionElementoDao().insertAll(newCalificacionElemento);
+                }
+            }
         }
 
-        CalificacionEvaluacion[] calificacionEvaluacionesArray = new CalificacionEvaluacion[calificacionEvaluaciones.size()];
+        /*CalificacionEvaluacion[] calificacionEvaluacionesArray = new CalificacionEvaluacion[calificacionEvaluaciones.size()];
         calificacionEvaluacionesArray = calificacionEvaluaciones.toArray(calificacionEvaluacionesArray);
-        getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(calificacionEvaluacionesArray);
+        getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(calificacionEvaluacionesArray);*/
+    }
+
+    private void populateCalificacionCategoriaTable() {
+
     }
 
     private List<String> mapEstudiantesToNames(List<Evaluacion> eevaluacionObjects) {
