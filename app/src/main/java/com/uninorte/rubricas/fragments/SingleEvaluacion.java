@@ -17,8 +17,11 @@ import com.uninorte.rubricas.CustomEvaluacionesAdapter;
 import com.uninorte.rubricas.EvaluacionDataModel;
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
+import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.R.attr.fragment;
 
@@ -41,6 +44,8 @@ public class SingleEvaluacion extends Fragment {
     private String mParam2;
     private ArrayList<EvaluacionDataModel> dataModels;
     private static CustomEvaluacionesAdapter adapter;
+    private int evaluacionId;
+    private List<CalificacionEvaluacion> calificacionEvaluacionEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -78,20 +83,26 @@ public class SingleEvaluacion extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        evaluacionId = getArguments().getInt("evaluacionId");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_single_evaluacion, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        /*asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll();
-        asignaturas = new ArrayList<String>();
-        asignaturas.addAll(mapAsignaturasToNames(asignaturasEntities));
-        asignaturasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, asignaturas);*/
-        ListView listview = (ListView) getActivity().findViewById(R.id.evaluacion_list_view);
+        calificacionEvaluacionEntities = AppDatabase
+                .getAppDatabase(getActivity())
+                .calificacionEvaluacionDao()
+                .getAllForOneEvaluacion(evaluacionId);
+
         dataModels = new ArrayList<>();
-        dataModels.add(new EvaluacionDataModel("Luis", 2.4f));
-        dataModels.add(new EvaluacionDataModel("Mike", 4.9f));
+
+        for (CalificacionEvaluacion calificacionEvaluacion : calificacionEvaluacionEntities) {
+            dataModels.add(new EvaluacionDataModel(calificacionEvaluacion.getEstudianteNombre(), calificacionEvaluacion.getNota()));
+        }
+
+        ListView listview = (ListView) getActivity().findViewById(R.id.evaluacion_list_view);
+
         adapter = new CustomEvaluacionesAdapter(dataModels, getActivity());
         listview.setAdapter(adapter);
 

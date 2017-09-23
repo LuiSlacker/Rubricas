@@ -7,6 +7,12 @@ import android.content.Context;
 
 import com.uninorte.rubricas.db.asignatura.Asignatura;
 import com.uninorte.rubricas.db.asignatura.AsignaturaDAO;
+import com.uninorte.rubricas.db.calificacion.categoria.CalificacionCategoria;
+import com.uninorte.rubricas.db.calificacion.categoria.CalificacionCategoriaDAO;
+import com.uninorte.rubricas.db.calificacion.elemento.CalificacionElemento;
+import com.uninorte.rubricas.db.calificacion.elemento.CalificacionElementoDAO;
+import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
+import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacionDAO;
 import com.uninorte.rubricas.db.categoria.Categoria;
 import com.uninorte.rubricas.db.categoria.CategoriaDAO;
 import com.uninorte.rubricas.db.elementos.Elemento;
@@ -24,7 +30,10 @@ import com.uninorte.rubricas.db.rubrica.RubricaDAO;
         Evaluacion.class,
         Rubrica.class,
         Categoria.class,
-        Elemento.class},
+        Elemento.class,
+        CalificacionEvaluacion.class,
+        CalificacionCategoria.class,
+        CalificacionElemento.class},
         version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -36,6 +45,9 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract RubricaDAO rubricaDao();
     public abstract CategoriaDAO categoriaDao();
     public abstract ElementoDAO elementoDao();
+    public abstract CalificacionEvaluacionDAO calificacionEvaluacionDao();
+    public abstract CalificacionCategoriaDAO calificacionCategoriaDao();
+    public abstract CalificacionElementoDAO calificacionElementoDao();
 
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {

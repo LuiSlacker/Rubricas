@@ -22,14 +22,17 @@ import android.widget.Spinner;
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
 import com.uninorte.rubricas.db.asignatura.Asignatura;
+import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
 import com.uninorte.rubricas.db.estudiante.Estudiante;
 import com.uninorte.rubricas.db.evaluacion.Evaluacion;
 import com.uninorte.rubricas.db.rubrica.Rubrica;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.uninorte.rubricas.R.layout.estudiantes;
+import static com.uninorte.rubricas.db.AppDatabase.getAppDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,6 +59,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
     private int rubricaId;
     private List<String> rubricas;
     private List<Rubrica> rubricasEntities = new ArrayList<>();
+    private List<Estudiante> estudianteEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,7 +105,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        List<Estudiante> estudianteEntities = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId);
+        estudianteEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId);
         evaluaciones = new ArrayList<String>();
         evaluaciones.addAll(mapEstudiantesToNames(estudianteEntities));
         evaluacionesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, evaluaciones);
@@ -118,14 +122,14 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
-                //long asignaturaId = asignaturasEntities.get(i).getUid();
-                /*Bundle bundle = new Bundle();
-                bundle.putInt("asignaturaId", (int) asignaturaId);
-                fragment.setArguments(bundle);*/
+                estudianteEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId); // refetch all asigntauras for Ids
+                long estudianteId = estudianteEntities.get(i).getUid();
+                Bundle bundle = new Bundle();
+                bundle.putInt("evaluacionId", (int) estudianteId);
+                fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                //getActivity().setTitle(asignaturas.get(i)+"");
+                getActivity().setTitle(evaluaciones.get(i)+"");
             }
         });
 
@@ -133,7 +137,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rubricasEntities = AppDatabase.getAppDatabase(getActivity()).rubricaDao().getAll();
+                rubricasEntities = getAppDatabase(getActivity()).rubricaDao().getAll();
                 rubricas = new ArrayList<String>();
                 rubricas.addAll(mapRubricasToNames(rubricasEntities));
                 rubricasAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, rubricas);
@@ -154,7 +158,8 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                                 newEvaluacion.setNombre(nombre);
                                 newEvaluacion.setAsignaturaId((int) asignaturaId);
                                 newEvaluacion.setRubricaId(rubricaId);
-                                AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insertAll(newEvaluacion);
+                                long evaluacionID = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insert(newEvaluacion);
+                                populateCalificacionEvaluacionTable(evaluacionID);
 
                             }
                         })
@@ -182,6 +187,22 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                 });
             }
         });
+    }
+
+    private void populateCalificacionEvaluacionTable(long evaluacionID) {
+        List<CalificacionEvaluacion> calificacionEvaluaciones = new ArrayList<>();
+        List<Estudiante> estudiantesdentroAsignatura = getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int) asignaturaId);
+        for (Estudiante estudiante : estudiantesdentroAsignatura) {
+            CalificacionEvaluacion newCalificacionEvaluacion = new CalificacionEvaluacion();
+            newCalificacionEvaluacion.setEvaluacionId((int) evaluacionID);
+            newCalificacionEvaluacion.setEstudianteId(estudiante.getUid());
+            newCalificacionEvaluacion.setEstudianteNombre(estudiante.getNombre());
+            calificacionEvaluaciones.add(newCalificacionEvaluacion);
+        }
+
+        CalificacionEvaluacion[] calificacionEvaluacionesArray = new CalificacionEvaluacion[calificacionEvaluaciones.size()];
+        calificacionEvaluacionesArray = calificacionEvaluaciones.toArray(calificacionEvaluacionesArray);
+        getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(calificacionEvaluacionesArray);
     }
 
     private List<String> mapEstudiantesToNames(List<Estudiante> estudianteObjects) {
