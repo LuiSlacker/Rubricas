@@ -130,7 +130,7 @@ public class ElementosDentroCategorias extends Fragment {
             @Override
             public void onClick(View view) {
                 new AlertDialog.Builder(getActivity())
-                        .setTitle("Crear Categoria")
+                        .setTitle("Crear Elemento")
                         .setMessage("Ingrese un nombre!")
                         .setView(R.layout.custom_elementos_dialog)
                         .setCancelable(false)

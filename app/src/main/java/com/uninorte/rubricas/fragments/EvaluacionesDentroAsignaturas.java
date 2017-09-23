@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.uninorte.rubricas.R.id.estudiante;
 import static com.uninorte.rubricas.R.layout.estudiantes;
 import static com.uninorte.rubricas.db.AppDatabase.getAppDatabase;
 
@@ -59,7 +60,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
     private int rubricaId;
     private List<String> rubricas;
     private List<Rubrica> rubricasEntities = new ArrayList<>();
-    private List<Estudiante> estudianteEntities = new ArrayList<>();
+    private List<Evaluacion> evaluacionEntities = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -105,9 +106,9 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        estudianteEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId);
+        evaluacionEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId);
         evaluaciones = new ArrayList<String>();
-        evaluaciones.addAll(mapEstudiantesToNames(estudianteEntities));
+        evaluaciones.addAll(mapEstudiantesToNames(evaluacionEntities));
         evaluacionesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, evaluaciones);
         ListView listview = (ListView) getActivity().findViewById(R.id.evaluacionesDentroAsignaturas);
         listview.setAdapter(evaluacionesAdapter);
@@ -122,10 +123,10 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                estudianteEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId); // refetch all asigntauras for Ids
-                long estudianteId = estudianteEntities.get(i).getUid();
+                evaluacionEntities = getAppDatabase(getActivity()).evaluacionDao().getAllForOneAsignatura((int)asignaturaId); // refetch all asigntauras for Ids
+                long evaluacionId = evaluacionEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
-                bundle.putInt("evaluacionId", (int) estudianteId);
+                bundle.putInt("evaluacionId", (int) evaluacionId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
@@ -205,10 +206,10 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(calificacionEvaluacionesArray);
     }
 
-    private List<String> mapEstudiantesToNames(List<Estudiante> estudianteObjects) {
+    private List<String> mapEstudiantesToNames(List<Evaluacion> eevaluacionObjects) {
         List<String> list = new ArrayList<String>();
-        for (Estudiante estudiante: estudianteObjects) {
-            list.add(estudiante.getNombre());
+        for (Evaluacion evaluacion: eevaluacionObjects) {
+            list.add(evaluacion.getNombre());
         }
         return list;
     }

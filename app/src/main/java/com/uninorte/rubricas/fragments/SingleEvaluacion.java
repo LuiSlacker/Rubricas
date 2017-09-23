@@ -109,22 +109,20 @@ public class SingleEvaluacion extends Fragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /*Fragment fragment = null;
+                Fragment fragment = null;
                 Class fragmentClass = null;
-                fragmentClass = AsignaturasTabWrapper.class;
+                fragmentClass = EvaluacionUI.class;
                 try {
                     fragment = (Fragment) fragmentClass.newInstance();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
-                long asignaturaId = asignaturasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
-                bundle.putInt("asignaturaId", (int) asignaturaId);
+                bundle.putInt("evaluacionId", evaluacionId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                getActivity().setTitle(asignaturas.get(i)+"");*/
+                getActivity().setTitle("Calificacion");
             }
         });
     }

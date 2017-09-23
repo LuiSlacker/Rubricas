@@ -5,10 +5,11 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.uninorte.rubricas.db.categoria.Categoria;
 import com.uninorte.rubricas.db.rubrica.Rubrica;
 
 @Entity(tableName = "elemento",
-        foreignKeys = @ForeignKey(entity = Rubrica.class,
+        foreignKeys = @ForeignKey(entity = Categoria.class,
                         parentColumns = "uid",
                         childColumns = "categoria_id"))
 public class Elemento {

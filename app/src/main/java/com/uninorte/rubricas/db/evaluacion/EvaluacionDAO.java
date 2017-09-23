@@ -17,7 +17,11 @@ public interface EvaluacionDAO {
 
     @Query("SELECT * FROM evaluacion "
             + "WHERE evaluacion.asignatura_id = (:asignaturaId)")
-    List<Estudiante> getAllForOneAsignatura(int asignaturaId);
+    List<Evaluacion> getAllForOneAsignatura(int asignaturaId);
+
+    @Query("SELECT * FROM evaluacion "
+            + "WHERE evaluacion.uid = (:evaluacionId)")
+    Evaluacion getOneById(int evaluacionId);
 
     @Query("SELECT COUNT(*) from evaluacion")
     int countEvaluaciones();

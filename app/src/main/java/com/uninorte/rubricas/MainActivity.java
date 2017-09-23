@@ -19,6 +19,7 @@ import com.uninorte.rubricas.fragments.CategoriasDentroRubricas;
 import com.uninorte.rubricas.fragments.ElementosDentroCategorias;
 import com.uninorte.rubricas.fragments.Estudiantes;
 import com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas;
+import com.uninorte.rubricas.fragments.EvaluacionUI;
 import com.uninorte.rubricas.fragments.EvaluacionesDentroAsignaturas;
 import com.uninorte.rubricas.fragments.Rubricas;
 import com.uninorte.rubricas.fragments.AsignaturasTabWrapper;
@@ -36,7 +37,8 @@ public class MainActivity
             EvaluacionesDentroAsignaturas.OnFragmentInteractionListener,
             CategoriasDentroRubricas.OnFragmentInteractionListener,
             ElementosDentroCategorias.OnFragmentInteractionListener,
-            SingleEvaluacion.OnFragmentInteractionListener {
+            SingleEvaluacion.OnFragmentInteractionListener,
+            EvaluacionUI.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
