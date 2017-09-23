@@ -122,7 +122,7 @@ public class SingleEvaluacion extends Fragment {
                 bundle.putInt("calificacionEvaluacionId", (int) calificacionEvaluacionEntities.get(i).getUid());
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("singleEvaluacion").commit();
                 getActivity().setTitle(evaluacionNombre + " - " + dataModels.get(i).getEstudiante());
             }
         });

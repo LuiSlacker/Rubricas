@@ -113,7 +113,7 @@ public class Rubricas extends Fragment {
                 bundle.putInt("rubricaId", (int) rubricaId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("rubricas").commit();
                 getActivity().setTitle(rubricas.get(i)+"");
             }
         });

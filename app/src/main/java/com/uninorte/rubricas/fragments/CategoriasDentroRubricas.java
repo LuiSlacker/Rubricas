@@ -118,7 +118,7 @@ public class CategoriasDentroRubricas extends Fragment {
                 bundle.putInt("categoriaId", (int) categoriaId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("categorias").commit();
                 getActivity().setTitle(categorias.get(i)+"");
             }
         });

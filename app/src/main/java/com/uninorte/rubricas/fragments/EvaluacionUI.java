@@ -1,10 +1,10 @@
 package com.uninorte.rubricas.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,20 +20,13 @@ import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
 import com.uninorte.rubricas.db.calificacion.categoria.CalificacionCategoria;
 import com.uninorte.rubricas.db.calificacion.elemento.CalificacionElemento;
+import com.uninorte.rubricas.db.calificacion.evaluacion.CalificacionEvaluacion;
 import com.uninorte.rubricas.db.categoria.Categoria;
 import com.uninorte.rubricas.db.elementos.Elemento;
-import com.uninorte.rubricas.db.evaluacion.Evaluacion;
-import com.uninorte.rubricas.helper.CategoriaWrapper;
-import com.uninorte.rubricas.helper.ElementoWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.LinearLayout.LayoutParams;
-
-
-import static com.uninorte.rubricas.R.id.fab;
-import static com.uninorte.rubricas.R.id.spinner;
-import static com.uninorte.rubricas.db.AppDatabase.getAppDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,21 +97,20 @@ public class EvaluacionUI extends Fragment {
         List<CalificacionCategoria> calificacionCategorias = fetchCalificacionCategorias();
         for (CalificacionCategoria calificacionCategoria : calificacionCategorias) {
             TextView categoriaHeading = new TextView(getActivity());
-            categoriaHeading.setText(calificacionCategoria.getCategoriaNombre());
+            Categoria categoria = fetchCategoriaById(calificacionCategoria.getCategoriaId());
+            categoriaHeading.setText(calificacionCategoria.getCategoriaNombre() + " - " + categoria.getPeso()+"%");
             categoriaHeading.setTextSize(20);
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            params.setMargins(18, 4, 0, 0);
+            params.setMargins(18, 20, 0, 0);
             mainLayout.addView(categoriaHeading, params);
             List<CalificacionElemento> calificacionElementos = fetchCalificacionElementosForCalificacionCategoria((int) calificacionCategoria.getUid());
+
 
             for (CalificacionElemento calificacionElemento : calificacionElementos) {
                 View singleElemento = getLayoutInflater().inflate(R.layout.single_elemento_evaluacion, null);
                 TextView nombre = (TextView) singleElemento.findViewById(R.id.name);
-                nombre.setText(calificacionElemento.getElementoNombre());
-
                 Elemento elemento = fetchElementoById(calificacionElemento.getElementoId());
-
-
+                nombre.setText(calificacionElemento.getElementoNombre() + " - " + elemento.getPeso() + "%");
 
                 List<String> elementoNiveles = new ArrayList<String>();
                 elementoNiveles.addAll(mapElementoToNivelNames(elemento));
@@ -141,6 +133,12 @@ public class EvaluacionUI extends Fragment {
                                         .getOneById(calificacionElementoId);
                                 selectedCalificacionElemento.setNivel(position);
                                 AppDatabase.getAppDatabase(getActivity()).calificacionElementoDao().insertAll(selectedCalificacionElemento);
+
+                                CalificacionEvaluacion selectedCalificacionEvaluacion = AppDatabase.getAppDatabase(getActivity())
+                                        .calificacionEvaluacionDao()
+                                        .getOneById(calificacionEvaluacionId);
+                                selectedCalificacionEvaluacion.setNota(calculateNewAverage());
+                                AppDatabase.getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(selectedCalificacionEvaluacion);
                             }
 
                             @Override
@@ -150,7 +148,9 @@ public class EvaluacionUI extends Fragment {
                     }
                 });
                 mainLayout.addView(singleElemento);
+                mainLayout.addView(createDivider());
             }
+
         }
 
 
@@ -161,6 +161,36 @@ public class EvaluacionUI extends Fragment {
             }
         });
 
+    }
+
+    private View createDivider() {
+        View view = new View(getActivity());
+        view.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, 1));
+        view.setBackgroundColor(Color.parseColor("#B3B3B3"));
+        return view;
+    }
+
+    /**
+     * Calculates the new average for an entre evaluacion
+     * @return
+     */
+    private float calculateNewAverage() {
+        List<CalificacionCategoria> calificacionCategorias = fetchCalificacionCategorias();
+        float notaAverage = 0.0f;
+        for (CalificacionCategoria calificacionCategoria : calificacionCategorias) {
+            List<CalificacionElemento> calificacionElementos = fetchCalificacionElementosForCalificacionCategoria((int) calificacionCategoria.getUid());
+            float categoriaAverage = 0.0f;
+            for (CalificacionElemento calificacionElemento : calificacionElementos) {
+                int nivel = calificacionElemento.getNivel() + 1;
+                Elemento elemento = fetchElementoById(calificacionElemento.getElementoId());
+                int elementoPeso = elemento.getPeso();
+                categoriaAverage += elementoPeso * nivel / 100;
+            }
+            Categoria categoria = fetchCategoriaById(calificacionCategoria.getCategoriaId());
+            int categoriaPeso = categoria.getPeso();
+            notaAverage += categoriaPeso * categoriaAverage / 100;
+        }
+        return notaAverage;
     }
 
     private List<String> mapElementoToNivelNames(Elemento elemento) {
@@ -182,6 +212,10 @@ public class EvaluacionUI extends Fragment {
 
     private Elemento fetchElementoById(int elementoId) {
         return AppDatabase.getAppDatabase(getActivity()).elementoDao().getOneById(elementoId);
+    }
+
+    private Categoria fetchCategoriaById(int categoriaId) {
+        return AppDatabase.getAppDatabase(getActivity()).categoriaDao().getOneById(categoriaId);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

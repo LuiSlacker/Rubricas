@@ -114,7 +114,7 @@ public class Asignaturas extends Fragment {
                 bundle.putInt("asignaturaId", (int) asignaturaId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("asignaturas").commit();
                 getActivity().setTitle(asignaturas.get(i)+"");
             }
         });

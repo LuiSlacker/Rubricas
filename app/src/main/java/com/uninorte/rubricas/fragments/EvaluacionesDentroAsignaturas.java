@@ -134,7 +134,7 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                 bundle.putString("evaluacionNombre", evaluaciones.get(i)+"");
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("evaluaciones").commit();
                 getActivity().setTitle(evaluaciones.get(i)+"");
             }
         });
