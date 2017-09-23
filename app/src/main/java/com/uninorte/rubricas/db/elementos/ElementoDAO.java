@@ -18,6 +18,10 @@ public interface ElementoDAO {
             + "WHERE elemento.categoria_id = (:categoriaId)")
     List<Elemento> getAllForOneCategoria(int categoriaId);
 
+    @Query("SELECT * FROM elemento "
+            + "WHERE elemento.uid = (:elementoId)")
+    Elemento getOneById(int elementoId);
+
     @Query("SELECT COUNT(*) from elemento")
     int countElementos();
 

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.uninorte.rubricas.R;
 import com.uninorte.rubricas.db.AppDatabase;
 import com.uninorte.rubricas.db.calificacion.categoria.CalificacionCategoria;
+import com.uninorte.rubricas.db.calificacion.elemento.CalificacionElemento;
 import com.uninorte.rubricas.db.categoria.Categoria;
 import com.uninorte.rubricas.db.elementos.Elemento;
 import com.uninorte.rubricas.db.evaluacion.Evaluacion;
@@ -47,8 +48,9 @@ public class EvaluacionUI extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private boolean rogueFirstSelection;
     private int evaluacionId;
-    private List<CategoriaWrapper> categoriasWrapperList;
+    private int calificacionEvaluacionId;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -91,7 +93,7 @@ public class EvaluacionUI extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         evaluacionId = getArguments().getInt("evaluacionId");
-        categoriasWrapperList = new ArrayList<>();
+        calificacionEvaluacionId = getArguments().getInt("calificacionEvaluacionId");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_evaluacion_ui, container, false);
     }
@@ -99,57 +101,55 @@ public class EvaluacionUI extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         LinearLayout mainLayout = (LinearLayout) getActivity().findViewById(R.id.evaluacion_ui_wrapper);
-        List<Categoria> categorias = fetchCategorias();
-        for (Categoria categoria : categorias) {
+        List<CalificacionCategoria> calificacionCategorias = fetchCalificacionCategorias();
+        for (CalificacionCategoria calificacionCategoria : calificacionCategorias) {
             TextView categoriaHeading = new TextView(getActivity());
-            categoriaHeading.setText(categoria.getNombre());
+            categoriaHeading.setText(calificacionCategoria.getCategoriaNombre());
             categoriaHeading.setTextSize(20);
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             params.setMargins(18, 4, 0, 0);
             mainLayout.addView(categoriaHeading, params);
-            List<Elemento> elementos = fetchElementosForCategoria((int) categoria.getUid());
+            List<CalificacionElemento> calificacionElementos = fetchCalificacionElementosForCalificacionCategoria((int) calificacionCategoria.getUid());
 
-            /*CalificacionCategoria newCalificacionCategoria = new CalificacionCategoria();
-            newCalificacionCategoria.setCategoriaId(categoria.getUid());
-            newCalificacionCategoria.setCalificacionEvaluacionId();*/
-
-
-            CategoriaWrapper categoriasWrapper = new CategoriaWrapper();
-            categoriasWrapper.setCategoriaID(categoria.getUid());
-            categoriasWrapperList.add(categoriasWrapper);
-
-            for (Elemento elemento : elementos) {
+            for (CalificacionElemento calificacionElemento : calificacionElementos) {
                 View singleElemento = getLayoutInflater().inflate(R.layout.single_elemento_evaluacion, null);
                 TextView nombre = (TextView) singleElemento.findViewById(R.id.name);
-                nombre.setText(elemento.getNombre());
+                nombre.setText(calificacionElemento.getElementoNombre());
+
+                Elemento elemento = fetchElementoById(calificacionElemento.getElementoId());
+
 
 
                 List<String> elementoNiveles = new ArrayList<String>();
                 elementoNiveles.addAll(mapElementoToNivelNames(elemento));
                 ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, elementoNiveles);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                Spinner spinner = (Spinner) singleElemento.findViewById(R.id.spinner);
-                spinner.setTag(elemento.getUid()+"");
+                final Spinner spinner = (Spinner) singleElemento.findViewById(R.id.spinner);
+                spinner.setTag(calificacionElemento.getUid()+"");
                 spinner.setAdapter(spinnerAdapter);
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                spinner.setSelection(calificacionElemento.getNivel());
 
-                        view.getTag();
-                    }
+                // Post to avoid initial invocation where Tag wont be set yet
+                spinner.post(new Runnable() {
+                    @Override public void run() {
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                int calificacionElementoId = Integer.valueOf(parent.getTag().toString());
+                                CalificacionElemento selectedCalificacionElemento = AppDatabase.getAppDatabase(getActivity())
+                                        .calificacionElementoDao()
+                                        .getOneById(calificacionElementoId);
+                                selectedCalificacionElemento.setNivel(position);
+                                AppDatabase.getAppDatabase(getActivity()).calificacionElementoDao().insertAll(selectedCalificacionElemento);
+                            }
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
                     }
                 });
                 mainLayout.addView(singleElemento);
-
-                ElementoWrapper elementoWrapper = new ElementoWrapper();
-                elementoWrapper.setElementoId(elemento.getUid());
-                elementoWrapper.setElementoNombre(elemento.getNombre());
-
-                categoriasWrapper.getElementoWrapperList().add(elementoWrapper);
             }
         }
 
@@ -172,13 +172,16 @@ public class EvaluacionUI extends Fragment {
         return list;
     }
 
-    private List<Categoria> fetchCategorias() {
-        long rubricaId = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().getOneById(evaluacionId).getRubricaId();
-        return AppDatabase.getAppDatabase(getActivity()).categoriaDao().getAllForOneRubrica((int) rubricaId);
+    private List<CalificacionCategoria> fetchCalificacionCategorias() {
+        return AppDatabase.getAppDatabase(getActivity()).calificacionCategoriaDao().getAllForOneCalificacionEvaluacion(calificacionEvaluacionId);
     }
 
-    private List<Elemento> fetchElementosForCategoria(int categoriaId) {
-        return AppDatabase.getAppDatabase(getActivity()).elementoDao().getAllForOneCategoria(categoriaId);
+    private List<CalificacionElemento> fetchCalificacionElementosForCalificacionCategoria(int calificacionCategoriaId) {
+        return AppDatabase.getAppDatabase(getActivity()).calificacionElementoDao().getAllForOneCalificacionCategoria(calificacionCategoriaId);
+    }
+
+    private Elemento fetchElementoById(int elementoId) {
+        return AppDatabase.getAppDatabase(getActivity()).elementoDao().getOneById(elementoId);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

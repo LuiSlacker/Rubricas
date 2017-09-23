@@ -119,6 +119,7 @@ public class SingleEvaluacion extends Fragment {
                 }
                 Bundle bundle = new Bundle();
                 bundle.putInt("evaluacionId", evaluacionId);
+                bundle.putInt("calificacionEvaluacionId", (int) calificacionEvaluacionEntities.get(i).getUid());
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
