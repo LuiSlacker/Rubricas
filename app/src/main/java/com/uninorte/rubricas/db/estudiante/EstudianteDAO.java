@@ -25,6 +25,9 @@ public interface EstudianteDAO {
     @Insert
     void insertAll(Estudiante... estudiantes);
 
+    @Insert
+    long insert(Estudiante estudiante);
+
     @Delete
     void delete(Estudiante estudiante);
 }

@@ -195,8 +195,10 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
         });
     }
 
+    /**
+     * populates the corresponding calificacion tables
+     */
     private void populateCalificacionTables(long evaluacionID) {
-        //List<CalificacionEvaluacion> calificacionEvaluaciones = new ArrayList<>();
         List<Estudiante> estudiantesdentroAsignatura = getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int) asignaturaId);
         for (Estudiante estudiante : estudiantesdentroAsignatura) {
             CalificacionEvaluacion newCalificacionEvaluacion = new CalificacionEvaluacion();
@@ -224,14 +226,6 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                 }
             }
         }
-
-        /*CalificacionEvaluacion[] calificacionEvaluacionesArray = new CalificacionEvaluacion[calificacionEvaluaciones.size()];
-        calificacionEvaluacionesArray = calificacionEvaluaciones.toArray(calificacionEvaluacionesArray);
-        getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(calificacionEvaluacionesArray);*/
-    }
-
-    private void populateCalificacionCategoriaTable() {
-
     }
 
     private List<String> mapEstudiantesToNames(List<Evaluacion> eevaluacionObjects) {
