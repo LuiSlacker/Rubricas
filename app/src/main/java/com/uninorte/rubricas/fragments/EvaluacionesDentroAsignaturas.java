@@ -158,14 +158,17 @@ public class EvaluacionesDentroAsignaturas extends Fragment {
                                 Dialog dialogObj = Dialog.class.cast(dialog);
                                 EditText edt =(EditText) dialogObj.findViewById(R.id.evaluacion_nombre);
                                 String nombre = edt.getText().toString();
-                                evaluaciones.add(nombre);
-                                evaluacionesAdapter.notifyDataSetChanged();
-                                Evaluacion newEvaluacion = new Evaluacion();
-                                newEvaluacion.setNombre(nombre);
-                                newEvaluacion.setAsignaturaId((int) asignaturaId);
-                                newEvaluacion.setRubricaId(rubricaId);
-                                long evaluacionID = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insert(newEvaluacion);
-                                populateCalificacionTables(evaluacionID);
+
+                                if (!edt.getText().toString().trim().equalsIgnoreCase("")) {
+                                    evaluaciones.add(nombre);
+                                    evaluacionesAdapter.notifyDataSetChanged();
+                                    Evaluacion newEvaluacion = new Evaluacion();
+                                    newEvaluacion.setNombre(nombre);
+                                    newEvaluacion.setAsignaturaId((int) asignaturaId);
+                                    newEvaluacion.setRubricaId(rubricaId);
+                                    long evaluacionID = AppDatabase.getAppDatabase(getActivity()).evaluacionDao().insert(newEvaluacion);
+                                    populateCalificacionTables(evaluacionID);
+                                }
 
                             }
                         })

@@ -138,12 +138,15 @@ public class Rubricas extends Fragment {
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String nombre = nombreEditText.getText().toString();
-                                rubricas.add(nombre);
-                                rubricasAdapter.notifyDataSetChanged();
 
-                                Rubrica newRubrica = new Rubrica();
-                                newRubrica.setNombre(nombre);
-                                AppDatabase.getAppDatabase(getActivity()).rubricaDao().insertAll(newRubrica);
+                                if (!nombreEditText.getText().toString().trim().equalsIgnoreCase("")) {
+                                    rubricas.add(nombre);
+                                    rubricasAdapter.notifyDataSetChanged();
+
+                                    Rubrica newRubrica = new Rubrica();
+                                    newRubrica.setNombre(nombre);
+                                    AppDatabase.getAppDatabase(getActivity()).rubricaDao().insertAll(newRubrica);
+                                }
 
                             }
                         })

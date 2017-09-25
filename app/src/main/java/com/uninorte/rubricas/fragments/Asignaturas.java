@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.media.CamcorderProfile.get;
+import static com.uninorte.rubricas.R.id.editText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -140,11 +141,18 @@ public class Asignaturas extends Fragment {
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String nombre = nombreEditText.getText().toString();
-                                asignaturas.add(nombre);
-                                asignaturasAdapter.notifyDataSetChanged();
-                                Asignatura newAsignatura = new Asignatura();
-                                newAsignatura.setNombre(nombre);
-                                AppDatabase.getAppDatabase(getActivity()).asignaturaDao().insertAll(newAsignatura);
+
+                                if (nombreEditText.getText().toString().trim().equalsIgnoreCase("")) {
+                                    nombreEditText.setError("Este campo no puede estar vacío");
+                                    nombreEditText.requestFocus();
+                                    return;
+                                } else {
+                                    asignaturas.add(nombre);
+                                    asignaturasAdapter.notifyDataSetChanged();
+                                    Asignatura newAsignatura = new Asignatura();
+                                    newAsignatura.setNombre(nombre);
+                                    AppDatabase.getAppDatabase(getActivity()).asignaturaDao().insertAll(newAsignatura);
+                                }
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

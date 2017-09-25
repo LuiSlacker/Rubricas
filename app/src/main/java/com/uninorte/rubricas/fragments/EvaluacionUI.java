@@ -158,6 +158,11 @@ public class EvaluacionUI extends Fragment {
         guardarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CalificacionEvaluacion selectedCalificacionEvaluacion = AppDatabase.getAppDatabase(getActivity())
+                        .calificacionEvaluacionDao()
+                        .getOneById(calificacionEvaluacionId);
+                selectedCalificacionEvaluacion.setNota(calculateNewAverage());
+                AppDatabase.getAppDatabase(getActivity()).calificacionEvaluacionDao().insertAll(selectedCalificacionEvaluacion);
             }
         });
 
@@ -184,13 +189,13 @@ public class EvaluacionUI extends Fragment {
                 int nivel = calificacionElemento.getNivel() + 1;
                 Elemento elemento = fetchElementoById(calificacionElemento.getElementoId());
                 int elementoPeso = elemento.getPeso();
-                categoriaAverage += elementoPeso * nivel / 100;
+                categoriaAverage += elementoPeso * nivel / 100.0f;
             }
             Categoria categoria = fetchCategoriaById(calificacionCategoria.getCategoriaId());
             int categoriaPeso = categoria.getPeso();
-            notaAverage += categoriaPeso * categoriaAverage / 100;
+            notaAverage += categoriaPeso * categoriaAverage / 100.0f;
         }
-        return notaAverage;
+        return notaAverage * 1.25f;
     }
 
     private List<String> mapElementoToNivelNames(Elemento elemento) {

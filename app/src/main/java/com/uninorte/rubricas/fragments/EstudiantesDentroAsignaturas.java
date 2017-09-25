@@ -145,14 +145,17 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                         .setPositiveButton("Crear", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 String nombre = nombreEditText.getText().toString();
-                                estudiantes.add(nombre);
-                                estudiantesAdapter.notifyDataSetChanged();
-                                Estudiante newEstudiante = new Estudiante();
-                                newEstudiante.setNombre(nombre);
-                                newEstudiante.setAsignaturaId((int) asignaturaId);
-                                long newEstudianteId = getAppDatabase(getActivity()).estudianteDao().insert(newEstudiante);
 
-                                populateCalificacionTables((int) newEstudianteId, nombre);
+                                if (!nombreEditText.getText().toString().trim().equalsIgnoreCase("")) {
+                                    estudiantes.add(nombre);
+                                    estudiantesAdapter.notifyDataSetChanged();
+                                    Estudiante newEstudiante = new Estudiante();
+                                    newEstudiante.setNombre(nombre);
+                                    newEstudiante.setAsignaturaId((int) asignaturaId);
+                                    long newEstudianteId = getAppDatabase(getActivity()).estudianteDao().insert(newEstudiante);
+
+                                    populateCalificacionTables((int) newEstudianteId, nombre);
+                                }
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

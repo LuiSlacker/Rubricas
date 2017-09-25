@@ -146,6 +146,7 @@ public class CategoriasDentroRubricas extends Fragment {
                                 EditText edtNombre = (EditText) dialogObj.findViewById(R.id.categorias_nombre);
                                 EditText edtPeso = (EditText) dialogObj.findViewById(R.id.categorias_peso);
                                 String nombre = edtNombre.getText().toString();
+
                                 int peso = Integer.parseInt(edtPeso.getText().toString());
                                 categorias.add(nombre);
                                 categoriasAdapter.notifyDataSetChanged();
