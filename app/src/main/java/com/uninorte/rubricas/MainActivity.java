@@ -22,6 +22,7 @@ import com.uninorte.rubricas.fragments.EstudiantesDentroAsignaturas;
 import com.uninorte.rubricas.fragments.EstudiantesReport;
 import com.uninorte.rubricas.fragments.EvaluacionUI;
 import com.uninorte.rubricas.fragments.EvaluacionesDentroAsignaturas;
+import com.uninorte.rubricas.fragments.Info;
 import com.uninorte.rubricas.fragments.Rubricas;
 import com.uninorte.rubricas.fragments.AsignaturasTabWrapper;
 import com.uninorte.rubricas.fragments.SingleEvaluacion;
@@ -40,7 +41,8 @@ public class MainActivity
             ElementosDentroCategorias.OnFragmentInteractionListener,
             SingleEvaluacion.OnFragmentInteractionListener,
             EvaluacionUI.OnFragmentInteractionListener,
-            EstudiantesReport.OnFragmentInteractionListener {
+            EstudiantesReport.OnFragmentInteractionListener,
+            Info.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,17 @@ public class MainActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Fragment fragment = null;
+            Class fragmentClass = Info.class;
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("info").commit();
+
             return true;
         }
 
