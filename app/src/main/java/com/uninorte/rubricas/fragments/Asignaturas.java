@@ -1,5 +1,6 @@
 package com.uninorte.rubricas.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -85,6 +86,8 @@ public class Asignaturas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getActivity().setTitle("Asignaturas");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_asignaturas, container, false);
     }
@@ -112,6 +115,7 @@ public class Asignaturas extends Fragment {
                 long asignaturaId = asignaturasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
                 bundle.putInt("asignaturaId", (int) asignaturaId);
+                bundle.putString("asignaturaNombre", asignaturas.get(i)+"");
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("asignaturas").commit();

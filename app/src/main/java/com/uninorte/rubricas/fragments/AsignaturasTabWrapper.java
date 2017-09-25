@@ -32,6 +32,7 @@ public class AsignaturasTabWrapper extends Fragment {
     private String mParam1;
     private String mParam2;
     private long asignaturaId;
+    private String asignaturaNombre;
 
     private OnFragmentInteractionListener mListener;
 
@@ -71,6 +72,9 @@ public class AsignaturasTabWrapper extends Fragment {
                              Bundle savedInstanceState) {
 
         asignaturaId = getArguments().getInt("asignaturaId");
+        asignaturaNombre = getArguments().getString("asignaturaNombre");
+
+        getActivity().setTitle(asignaturaNombre);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_asignaturas_tab_wrapper, container, false);
     }

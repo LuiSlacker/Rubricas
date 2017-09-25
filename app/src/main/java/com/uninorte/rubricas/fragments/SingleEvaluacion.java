@@ -84,6 +84,8 @@ public class SingleEvaluacion extends Fragment {
                              Bundle savedInstanceState) {
         evaluacionId = getArguments().getInt("evaluacionId");
         evaluacionNombre = getArguments().getString("evaluacionNombre");
+
+        getActivity().setTitle(evaluacionNombre);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_single_evaluacion, container, false);
     }

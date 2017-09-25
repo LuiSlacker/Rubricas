@@ -49,6 +49,7 @@ public class ElementosDentroCategorias extends Fragment {
     private List<Elemento> elementosEntities = new ArrayList<>();
 
     private int categoriaId;
+    private String categoriaNombre;
 
     private OnFragmentInteractionListener mListener;
 
@@ -88,6 +89,9 @@ public class ElementosDentroCategorias extends Fragment {
                              Bundle savedInstanceState) {
 
         categoriaId = getArguments().getInt("categoriaId");
+        categoriaNombre = getArguments().getString("categoriaNombre");
+
+        getActivity().setTitle(categoriaNombre);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_elementos_dentro_categorias, container, false);
@@ -101,27 +105,6 @@ public class ElementosDentroCategorias extends Fragment {
         elementosAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, elementos);
         ListView listview = (ListView) getActivity().findViewById(R.id.elementosListView);
         listview.setAdapter(elementosAdapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                /*Fragment fragment = null;
-                Class fragmentClass = null;
-                fragmentClass = AsignaturasTabWrapper.class;
-                try {
-                    fragment = (Fragment) fragmentClass.newInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                asignaturasEntities = AppDatabase.getAppDatabase(getActivity()).asignaturaDao().getAll(); // refetch all asigntauras for Ids
-                long asignaturaId = asignaturasEntities.get(i).getUid();
-                Bundle bundle = new Bundle();
-                bundle.putInt("asignaturaId", (int) asignaturaId);
-                fragment.setArguments(bundle);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-                getActivity().setTitle(asignaturas.get(i)+"");*/
-            }
-        });
 
 
         final LinearLayout mainLayout = (LinearLayout) getView().findViewById(R.id.main_layout);

@@ -50,6 +50,7 @@ public class CategoriasDentroRubricas extends Fragment {
     private List<Categoria> categoriasEntities = new ArrayList<>();
 
     private int rubricaId;
+    private String rubricaNombre;
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,6 +90,10 @@ public class CategoriasDentroRubricas extends Fragment {
                              Bundle savedInstanceState) {
 
         rubricaId = getArguments().getInt("rubricaId");
+        rubricaNombre = getArguments().getString("rubricaNombre");
+
+        getActivity().setTitle(rubricaNombre);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_categorias_dentro_rubricas, container, false);
     }
@@ -116,6 +121,7 @@ public class CategoriasDentroRubricas extends Fragment {
                 long categoriaId = categoriasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
                 bundle.putInt("categoriaId", (int) categoriaId);
+                bundle.putString("categoriaNombre", categorias.get(i)+"");
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("categorias").commit();

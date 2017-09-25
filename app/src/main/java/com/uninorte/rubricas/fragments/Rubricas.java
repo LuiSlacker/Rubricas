@@ -84,6 +84,8 @@ public class Rubricas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        getActivity().setTitle("Rubricas");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_rubricas, container, false);
     }
@@ -111,6 +113,7 @@ public class Rubricas extends Fragment {
                 long rubricaId = rubricasEntities.get(i).getUid();
                 Bundle bundle = new Bundle();
                 bundle.putInt("rubricaId", (int) rubricaId);
+                bundle.putString("rubricaNombre", rubricas.get(i)+"");
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("rubricas").commit();
