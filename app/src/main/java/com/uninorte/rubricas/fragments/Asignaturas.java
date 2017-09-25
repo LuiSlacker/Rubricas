@@ -164,7 +164,6 @@ public class Asignaturas extends Fragment {
         });
     }
 
-
     private List<String> mapAsignaturasToNames(List<Asignatura> asignaturasObjects) {
         List<String> list = new ArrayList<String>();
         for (Asignatura asignatura: asignaturasObjects) {

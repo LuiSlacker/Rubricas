@@ -7,14 +7,14 @@
                 android:id="@+id/nav_asignatura"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="Asginaturas" />
-            <item
+            <!--<item
                 android:id="@+id/nav_estudiantes"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="Estudiantes" />
+                android:title="Estudiantes" />-->
             <item
                 android:id="@+id/nav_rubricas"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="Rubricas" />
+                android:title="Rúbricas" />
         </menu>
     </item>
 

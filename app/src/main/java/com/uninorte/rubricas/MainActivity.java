@@ -124,15 +124,12 @@ public class MainActivity
 
         Fragment fragment = null;
         Class fragmentClass = null;
-        if (id == R.id.nav_estudiantes) {
-            fragmentClass = Estudiantes.class;
-            setTitle("Estudiantes");
-        } else if (id == R.id.nav_asignatura) {
+        if (id == R.id.nav_asignatura) {
             fragmentClass = Asignaturas.class;
-            setTitle("Asignaturas");
+        /*} else if (id == R.id.nav_estudiantes) {
+            fragmentClass = Estudiantes.class;*/
         } else if (id == R.id.nav_rubricas) {
             fragmentClass = Rubricas.class;
-            setTitle("Rubricas");
         }
 
         try {
