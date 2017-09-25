@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-
     <item android:title="Crear / Cambiar">
         <menu>
             <item
@@ -19,12 +17,5 @@
                 android:title="Rubricas" />
         </menu>
     </item>
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Reportes" />
-    </group>
 
 </menu>

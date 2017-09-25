@@ -20,6 +20,10 @@ public interface CalificacionEvaluacionDAO {
     List<CalificacionEvaluacion> getAllForOneEvaluacion(int evaluacionId);
 
     @Query("SELECT * FROM calificacion_evaluacion "
+                  + "WHERE calificacion_evaluacion.estudiante_id = (:estudianteId)")
+    List<CalificacionEvaluacion> getAllForOneEstudiante(int estudianteId);
+
+    @Query("SELECT * FROM calificacion_evaluacion "
                   + "WHERE calificacion_evaluacion.uid = (:calificacionEvaluacionId)")
     CalificacionEvaluacion getOneById(int calificacionEvaluacionId);
 

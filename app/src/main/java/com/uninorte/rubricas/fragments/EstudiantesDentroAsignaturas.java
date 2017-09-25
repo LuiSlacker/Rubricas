@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -43,6 +45,7 @@ public class EstudiantesDentroAsignaturas extends Fragment {
 
     private List<String> estudiantes;
     private ArrayAdapter<String> estudiantesAdapter;
+    private List<Estudiante> estudianteEntities;
     private long asignaturaId;
 
     private OnFragmentInteractionListener mListener;
@@ -90,12 +93,33 @@ public class EstudiantesDentroAsignaturas extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        List<Estudiante> estudianteEntities = AppDatabase.getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int)asignaturaId);
+        estudianteEntities = AppDatabase.getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int)asignaturaId);
         estudiantes = new ArrayList<String>();
         estudiantes.addAll(mapEstudiantesToNames(estudianteEntities));
         estudiantesAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, estudiantes);
         ListView listview = (ListView) getActivity().findViewById(R.id.estudiantesDentroAsgnaturasListView);
         listview.setAdapter(estudiantesAdapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fragment fragment = null;
+                Class fragmentClass = null;
+                fragmentClass = EstudiantesReport.class;
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                estudianteEntities = AppDatabase.getAppDatabase(getActivity()).estudianteDao().getAllForOneAsignatura((int)asignaturaId); // refetch all asigntauras for Ids
+                long estudianteId = estudianteEntities.get(i).getUid();
+                Bundle bundle = new Bundle();
+                bundle.putInt("estudianteId", (int) estudianteId);
+                fragment.setArguments(bundle);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("estudiantesReport").commit();
+                getActivity().setTitle(estudiantes.get(i)+"");
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) getView().findViewById(R.id.estudiantes_fab);
         fab.setOnClickListener(new View.OnClickListener() {

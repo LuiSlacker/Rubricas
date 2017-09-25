@@ -56,7 +56,7 @@ public class CustomEvaluacionesAdapter extends ArrayAdapter<EvaluacionDataModel>
         }
 
         viewHolder.txtEstudiante.setText(dataModel.getEstudiante());
-        viewHolder.txtNota.setText(dataModel.getNota()+"");
+        viewHolder.txtNota.setText(dataModel.getNota() == 0.0 ? "-" : dataModel.getNota()+"");
         return convertView;
     }
 
