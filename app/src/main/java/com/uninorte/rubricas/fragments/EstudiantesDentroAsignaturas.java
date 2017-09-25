@@ -116,7 +116,7 @@ public class EstudiantesDentroAsignaturas extends Fragment {
                 bundle.putInt("estudianteId", (int) estudianteId);
                 fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("estudiantesReport").commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack("estudiantes").commit();
                 getActivity().setTitle(estudiantes.get(i)+"");
             }
         });

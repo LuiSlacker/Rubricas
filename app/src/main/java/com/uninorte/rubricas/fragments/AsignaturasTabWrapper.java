@@ -87,7 +87,7 @@ public class AsignaturasTabWrapper extends Fragment {
 
         final ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
-                (getActivity().getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
+                (getChildFragmentManager(), tabLayout.getTabCount(), bundle);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -108,7 +108,6 @@ public class AsignaturasTabWrapper extends Fragment {
             }
         });
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
